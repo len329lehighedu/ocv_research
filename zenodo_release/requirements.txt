@@ -1,7 +1,0 @@
-# Checked with Python 3.14.0. PDF-reading tools are not required for reproduction.
-numpy==2.4.1
-pandas==2.3.3
-scipy==1.17.0
-statsmodels==0.15.0
-matplotlib==3.10.8
-Pillow==12.1.0

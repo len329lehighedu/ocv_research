@@ -1,5 +1,0 @@
-transition,event_months
-zero -> zero,20
-zero -> positive,2
-positive -> zero,0
-positive -> positive,36

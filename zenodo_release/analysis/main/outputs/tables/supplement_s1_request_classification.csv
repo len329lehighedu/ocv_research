@@ -1,9 +1,0 @@
-category,requests,requested_doses,numeric_approved_doses
-Requested and approved quantities equal,48,45753202,45753202
-Partially approved,12,13956904,7314508
-Approved quantity exceeds requested quantity,1,164582,254582
-Approved quantity recorded; requested quantity missing,1,,676000
-Marked not approved,13,16467152,
-Marked cancelled,2,2474806,
-No decision date or approved quantity logged,11,10272002,
-Total,88,89088648,53998292

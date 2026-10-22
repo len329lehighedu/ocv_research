@@ -1,7 +1,0 @@
-Outcome,Countries,Country-months,Event-months,Between coefficient [asymptotic 95% CI],Between bootstrap p,Within coefficient [asymptotic 95% CI],Within bootstrap p
-Reactive requests,25,1650,58,"0.728 [0.439, 1.017]",0.00158,"0.073 [-0.400, 0.546]",0.77358
-Reactive requests,23,1518,42,"0.577 [0.173, 0.980]",0.06619,"0.057 [-0.541, 0.656]",0.85560
-Reactive requests,22,1452,37,"0.472 [-0.141, 1.084]",0.18678,"0.023 [-0.611, 0.658]",0.93927
-All requests,25,1650,73,"0.702 [0.411, 0.993]",0.00146,"-0.052 [-0.492, 0.389]",0.82622
-All requests,23,1518,54,"0.578 [0.180, 0.975]",0.05104,"-0.064 [-0.623, 0.495]",0.83117
-All requests,22,1452,48,"0.509 [-0.113, 1.131]",0.14422,"-0.114 [-0.699, 0.472]",0.72055

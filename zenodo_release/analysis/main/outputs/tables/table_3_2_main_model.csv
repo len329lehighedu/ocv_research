@@ -1,3 +1,0 @@
-Outcome,Lag (months),Component,Coefficient,Asymptotic 95% CI,Bootstrap p
-Reactive requests,12,between,0.443,"[0.256, 0.630]",0.00007
-Reactive requests,12,within,0.033,"[-0.204, 0.270]",0.79180
