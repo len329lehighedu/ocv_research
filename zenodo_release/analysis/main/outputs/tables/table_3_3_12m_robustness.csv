@@ -1,0 +1,7 @@
+Outcome,Countries,Between coefficient,Between asymptotic 95% CI,Between bootstrap p,Within coefficient,Within asymptotic 95% CI,Within bootstrap p
+Reactive requests,25,0.443,"[0.256, 0.630]",<0.001,0.033,"[-0.204, 0.270]",0.792
+Reactive requests,23,0.348,"[0.129, 0.567]",0.029,-0.001,"[-0.308, 0.306]",0.995
+Reactive requests,22,0.291,"[0.029, 0.552]",0.079,-0.016,"[-0.367, 0.336]",0.937
+All requests,25,0.418,"[0.226, 0.611]",<0.001,-0.020,"[-0.233, 0.193]",0.868
+All requests,23,0.328,"[0.097, 0.559]",0.012,-0.054,"[-0.335, 0.227]",0.727
+All requests,22,0.276,"[-0.019, 0.570]",0.040,-0.077,"[-0.397, 0.242]",0.664

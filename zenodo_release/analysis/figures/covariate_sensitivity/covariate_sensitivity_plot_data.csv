@@ -1,0 +1,11 @@
+model_order,model,label,covariate_group,component,coefficient_log_odds,ci95_low_asymptotic,ci95_high_asymptotic,p_wclr_c_rademacher,change_from_main_point_estimate,countries,country_months,reactive_event_months,lookback_months,scale
+0,main,Main model,Main,between,0.443366332123,0.256374923633,0.630357740614,7e-05,0.0,25,1650,58,12,per one unit of corresponding log predictor component
+0,main,Main model,Main,within,0.0330504992316,-0.204299269614,0.270400268077,0.7918,0.0,25,1650,58,12,per one unit of corresponding log predictor component
+1,income,+ Income group (FY2015),Income,between,0.4512738023854955,0.2573250371716188,0.6452225675993722,0.00015,0.007907470262495553,25,1650,58,12,per one unit of corresponding log predictor component
+1,income,+ Income group (FY2015),Income,within,0.033649467540637135,-0.20750286353263936,0.27480179861391363,0.79153,0.0005989683090371345,25,1650,58,12,per one unit of corresponding log predictor component
+2,government,+ Government expenditure (2013),Expenditure,between,0.42095792831397966,0.13697784897507903,0.7049380076528803,0.00933,-0.022408403809020316,25,1650,58,12,per one unit of corresponding log predictor component
+2,government,+ Government expenditure (2013),Expenditure,within,0.03330402592129126,-0.20570522506996178,0.2723132769125443,0.79161,0.0002535266896912594,25,1650,58,12,per one unit of corresponding log predictor component
+3,total,+ Total expenditure (2013),Expenditure,between,0.43759622029176903,0.20685207288854116,0.6683403676949969,0.00109,-0.00577011183123094,25,1650,58,12,per one unit of corresponding log predictor component
+3,total,+ Total expenditure (2013),Expenditure,within,0.03312322117243262,-0.20466427143160765,0.2709107137764729,0.79172,7.272194083261796e-05,25,1650,58,12,per one unit of corresponding log predictor component
+4,prior,+ Documented prior OCV campaign,Prior campaign,between,0.39239264750926295,0.22228950758597868,0.5624957874325472,0.00372,-0.050973684613737025,25,1650,58,12,per one unit of corresponding log predictor component
+4,prior,+ Documented prior OCV campaign,Prior campaign,within,0.035753111490368625,-0.2211515745686426,0.29265779754937987,0.79225,0.0027026122587686247,25,1650,58,12,per one unit of corresponding log predictor component

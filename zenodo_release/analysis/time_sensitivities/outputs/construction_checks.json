@@ -1,0 +1,17 @@
+{
+  "history_start": "2013-07",
+  "history_end": "2019-12",
+  "history_rows": 1950,
+  "estimation_start": "2014-07",
+  "estimation_end": "2019-12",
+  "estimation_rows": 1650,
+  "max_rebuilt_vs_frozen_difference": 4.995115432393504e-12,
+  "interval_pairs_verified": 1650,
+  "inclusive_zero_event_months": 20,
+  "all_event_transition_counts": {
+    "zero -> zero": 20,
+    "zero -> positive": 2,
+    "positive -> zero": 0,
+    "positive -> positive": 36
+  }
+}

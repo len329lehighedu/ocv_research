@@ -1,0 +1,83 @@
+{
+  "source_root": ".",
+  "original_sha256": {
+    "data/source/requests.csv": "0ba16965e0d9b565b914c41659de5a9b334760d4df2212464f77ae1ca8d61144",
+    "data/source/zheng_outbreak_records.csv": "d9d29e188f53b53f27a934a47c40531da187f09b8dde8da46046745b6800fc34",
+    "analysis/main/outputs/analysis_data/active_outbreak_panel.csv": "7a71ca386e5c653a31a321c28fb63ff299435600addfaf484ccd76dc4c5131c3",
+    "analysis/main/outputs/analysis_data/active_outbreak_results_seeded.csv": "7564c3cbe087e190544d3dea0c25b5eea42a1d771438fd64b7a24e5b52e436bd",
+    "analysis/main/code/research_pipeline/data/build_request_outcomes.py": "185d9957d3fe442d095e6c314e71e4a9d8610ba1062868f819b1c65a8d3003e5",
+    "analysis/main/code/research_pipeline/data/build_active_outbreak_panel.py": "fa7fdaa7be45e7a0182a7238203634123a1405ddcd86b95ec2985f65549305f7"
+  },
+  "snapshot_sha256": {
+    "zheng_outbreak_records.csv": "d9d29e188f53b53f27a934a47c40531da187f09b8dde8da46046745b6800fc34",
+    "request_outcomes_rebuilt.csv": "de5ea91d1d5ea780925eb731b863264340c2c7803cea5e8e7fda0c27aeae22fe",
+    "active_outbreak_panel.csv": "7a71ca386e5c653a31a321c28fb63ff299435600addfaf484ccd76dc4c5131c3",
+    "panel_rebuilt.csv": "8051ce948d8f89c2e91c8735a028a3533b2f54143d30ed09baba5f8e59540185",
+    "active_outbreak_results_seeded.csv": "7564c3cbe087e190544d3dea0c25b5eea42a1d771438fd64b7a24e5b52e436bd",
+    "requests.csv": "0ba16965e0d9b565b914c41659de5a9b334760d4df2212464f77ae1ca8d61144"
+  },
+  "builder_sha256": {
+    "build_request_outcomes.py": "185d9957d3fe442d095e6c314e71e4a9d8610ba1062868f819b1c65a8d3003e5",
+    "build_active_outbreak_panel.py": "fa7fdaa7be45e7a0182a7238203634123a1405ddcd86b95ec2985f65549305f7"
+  },
+  "rebuilt_vs_frozen_max_absolute_difference": {
+    "active_outbreak_months_prior_12m": 0.0,
+    "active_outbreak_months_prior_1m": 0.0,
+    "active_outbreak_months_prior_3m": 0.0,
+    "active_outbreak_months_prior_6m": 0.0,
+    "active_outbreaks_this_month": 0.0,
+    "log1p_active_outbreak_months_12m": 4.9631410092843e-12,
+    "log1p_active_outbreak_months_12m_between": 3.114841717888339e-12,
+    "log1p_active_outbreak_months_12m_within": 4.995115432393504e-12,
+    "log1p_active_outbreak_months_1m": 4.686695476152636e-12,
+    "log1p_active_outbreak_months_1m_between": 4.870770453635487e-12,
+    "log1p_active_outbreak_months_1m_within": 4.877209747178313e-12,
+    "log1p_active_outbreak_months_3m": 4.853895063661184e-12,
+    "log1p_active_outbreak_months_3m_between": 4.508837747607686e-12,
+    "log1p_active_outbreak_months_3m_within": 4.945377440890297e-12,
+    "log1p_active_outbreak_months_6m": 4.9604764740251994e-12,
+    "log1p_active_outbreak_months_6m_between": 4.8050452505776775e-12,
+    "log1p_active_outbreak_months_6m_within": 4.984901380566953e-12,
+    "reactive_request": 0.0,
+    "request_this_month": 0.0
+  },
+  "comparison_absolute_tolerance": 1e-09,
+  "estimation_period": [
+    "2014-07",
+    "2019-12"
+  ],
+  "history_period": [
+    "2013-07",
+    "2019-12"
+  ],
+  "observations": 1650,
+  "countries": [
+    "Angola",
+    "Benin",
+    "Burundi",
+    "Cameroon",
+    "Chad",
+    "DR Congo",
+    "Ethiopia",
+    "Ghana",
+    "Guinea",
+    "Ivory Coast",
+    "Kenya",
+    "Malawi",
+    "Mozambique",
+    "Namibia",
+    "Niger",
+    "Nigeria",
+    "Republic of the Congo",
+    "Sierra Leone",
+    "Somalia",
+    "South Sudan",
+    "Sudan",
+    "Tanzania",
+    "Uganda",
+    "Zambia",
+    "Zimbabwe"
+  ],
+  "reactive_request_months": 58,
+  "all_request_months": 73
+}

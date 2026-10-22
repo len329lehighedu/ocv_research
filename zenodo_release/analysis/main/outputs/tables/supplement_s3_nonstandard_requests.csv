@@ -1,0 +1,41 @@
+category,country,request_id_display,requested_doses,numeric_approved_doses
+Approved excess,Tanzania,2015-I07-D01,164582,254582
+Cancelled,DR Congo,2018-I01-D01,2301971,
+Cancelled,South Sudan,2016-I07-D01,172835,
+Missing requested dose,Malawi,2017-G03-D02,,676000
+No logged decision,Chad,2014-I06-D01,320000,
+No logged decision,DR Congo,2014-L01-D01,120000,
+No logged decision,DR Congo,2018-I06-D01,69846,
+No logged decision,Ethiopia,2014-I02-D01,278732,
+No logged decision,Ethiopia,2014-I05-D01,64335,
+No logged decision,Guinea,2014-L02-D01,284702,
+No logged decision,Sierra Leone,2019-I11-D01,1325504,
+No logged decision,South Sudan,2014-I01-D01,322900,
+No logged decision,South Sudan,2014-L04-D01,64000,
+No logged decision,South Sudan,2014-L05-D01,50000,
+No logged decision,Sudan,2018-G04-D01,7371983,
+Not approved,Burundi,2019-I16-D01,4933182,
+Not approved,Chad,2017-I13-D01,225150,
+Not approved,DR Congo,2019-I04-D01,1800000,
+Not approved,Ethiopia,2019-I07-D01,1324444,
+Not approved,Malawi,2016-I10-D01,180000,
+Not approved,Mozambique,2015-I02-D01,181496,
+Not approved,Niger,2018-I10-D01,1099652,
+Not approved,Nigeria,2017-I15-D01,580300,
+Not approved,Somalia,2017-I07-D01,96000,
+Not approved,Somalia,2017-I08-D01,142100,
+Not approved,South Sudan,2015-I08-D01,104400,
+Not approved,Sudan,2019-I15-D01,5663594,
+Not approved,Zambia,2019-I13-D01,136834,
+Partial approval,DR Congo,2019-I05-D01,2119078,1670336
+Partial approval,Ethiopia,2019-I09-D01,817705,778766
+Partial approval,Mozambique,2019-I08-D01,1854444,518988
+Partial approval,Niger,2018-I12-D01,2293776,317330
+Partial approval,Nigeria,2018-I05-D01,291000,252900
+Partial approval,Somalia,2017-I03-D01,988000,907200
+Partial approval,South Sudan,2015-I09-D01,639466,270326
+Partial approval,South Sudan,2017-I01-D01,304098,69125
+Partial approval,South Sudan,2018-I08-D01,105900,96260
+Partial approval,South Sudan,"External record, 24 Jan 2014",326000,252000
+Partial approval,Zambia,2017-G07-D01,4085603,2070027
+Partial approval,Zambia,2019-I06-D02,131834,111250

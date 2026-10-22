@@ -1,0 +1,482 @@
+{
+  "status": "optional_documented_prior_ocv_campaign_sensitivity_not_frozen_main",
+  "specification_protocol": "method_protocol.md",
+  "formula": "logit P(reactive_request_cm=1) = alpha + beta_B*between12_c + beta_W*within12_cm + gamma*documented_prior_campaign_pre2014jul_c",
+  "n_countries": 25,
+  "n_country_months": 1650,
+  "n_reactive_event_months": 58,
+  "ci_method": "95% normal country-cluster sandwich; use_correction=False",
+  "bootstrap_method": "Frozen restricted score-linearized WCLR-C, Rademacher, CV1 observed t; outbreak-activity terms only",
+  "aic": 485.8242166544232,
+  "coefficients": {
+    "log1p_active_outbreak_months_12m_between": {
+      "coefficient_log_odds": 0.39239264750926295,
+      "odds_ratio": 1.4805189193559953,
+      "ci95_log_odds_cluster_asymptotic": [
+        0.22228950758597868,
+        0.5624957874325472
+      ],
+      "ci95_odds_ratio_cluster_asymptotic": [
+        1.2489329010791426,
+        1.7550472636897452
+      ],
+      "p_wclr_c_rademacher": 0.00372,
+      "t_cv1_for_wclr_c": 4.425851377681135,
+      "bootstrap_reps": 99999,
+      "bootstrap_seed": 20261128
+    },
+    "log1p_active_outbreak_months_12m_within": {
+      "coefficient_log_odds": 0.035753111490368625,
+      "odds_ratio": 1.0363999396655101,
+      "ci95_log_odds_cluster_asymptotic": [
+        -0.2211515745686426,
+        0.29265779754937987
+      ],
+      "ci95_odds_ratio_cluster_asymptotic": [
+        0.8015951696394016,
+        1.3399841660995404
+      ],
+      "p_wclr_c_rademacher": 0.79225,
+      "t_cv1_for_wclr_c": 0.2670115896022698,
+      "bootstrap_reps": 99999,
+      "bootstrap_seed": 20261129
+    },
+    "prior_ocv_campaign_pre2014jul": {
+      "coefficient_log_odds": 0.5838196021893438,
+      "odds_ratio": 1.7928734322338777,
+      "ci95_log_odds_cluster_asymptotic": [
+        -0.09382196832212408,
+        1.2614611727008116
+      ],
+      "ci95_odds_ratio_cluster_asymptotic": [
+        0.910444835834959,
+        3.530576502267925
+      ]
+    }
+  },
+  "frozen_benchmark_reproduced": {
+    "between_coefficient": 0.44336633212339865,
+    "within_coefficient": 0.033050499231628776,
+    "aic": 488.07228780768884,
+    "frozen_p_between": 7e-05,
+    "frozen_p_within": 0.7918
+  },
+  "diagnostics": {
+    "ledger": {
+      "positive_countries": [
+        "DR Congo",
+        "Guinea",
+        "Mozambique",
+        "South Sudan",
+        "Sudan",
+        "Tanzania",
+        "Uganda"
+      ],
+      "positive_count": 7,
+      "not_documented_count": 18,
+      "ethiopia_request_not_imputed_as_campaign": true,
+      "drc_2013_actual_administration_documented": true
+    },
+    "panel": {
+      "countries": [
+        {
+          "country": "Angola",
+          "iso3": "AGO",
+          "prior_ocv_campaign_pre2014jul": 0,
+          "mean_recorded_log_activity": 0.264340341661,
+          "reactive_event_months": 0,
+          "within_sd": 0.5219590230499483
+        },
+        {
+          "country": "Benin",
+          "iso3": "BEN",
+          "prior_ocv_campaign_pre2014jul": 0,
+          "mean_recorded_log_activity": 0.290478572101,
+          "reactive_event_months": 0,
+          "within_sd": 0.7334336623175216
+        },
+        {
+          "country": "Burundi",
+          "iso3": "BDI",
+          "prior_ocv_campaign_pre2014jul": 0,
+          "mean_recorded_log_activity": 0.0,
+          "reactive_event_months": 1,
+          "within_sd": 0.0
+        },
+        {
+          "country": "Cameroon",
+          "iso3": "CMR",
+          "prior_ocv_campaign_pre2014jul": 0,
+          "mean_recorded_log_activity": 1.65934756123,
+          "reactive_event_months": 3,
+          "within_sd": 1.3334228069529936
+        },
+        {
+          "country": "Chad",
+          "iso3": "TCD",
+          "prior_ocv_campaign_pre2014jul": 0,
+          "mean_recorded_log_activity": 0.440650634793,
+          "reactive_event_months": 2,
+          "within_sd": 0.833051683678372
+        },
+        {
+          "country": "DR Congo",
+          "iso3": "COD",
+          "prior_ocv_campaign_pre2014jul": 1,
+          "mean_recorded_log_activity": 3.92809721439,
+          "reactive_event_months": 7,
+          "within_sd": 0.44010349736777304
+        },
+        {
+          "country": "Ethiopia",
+          "iso3": "ETH",
+          "prior_ocv_campaign_pre2014jul": 0,
+          "mean_recorded_log_activity": 3.4751292106,
+          "reactive_event_months": 3,
+          "within_sd": 2.396070215156567
+        },
+        {
+          "country": "Ghana",
+          "iso3": "GHA",
+          "prior_ocv_campaign_pre2014jul": 0,
+          "mean_recorded_log_activity": 0.204106508128,
+          "reactive_event_months": 0,
+          "within_sd": 0.4172024397280161
+        },
+        {
+          "country": "Guinea",
+          "iso3": "GIN",
+          "prior_ocv_campaign_pre2014jul": 1,
+          "mean_recorded_log_activity": 0.0604391522207,
+          "reactive_event_months": 1,
+          "within_sd": 0.24184295813529702
+        },
+        {
+          "country": "Ivory Coast",
+          "iso3": "CIV",
+          "prior_ocv_campaign_pre2014jul": 0,
+          "mean_recorded_log_activity": 0.204106508128,
+          "reactive_event_months": 0,
+          "within_sd": 0.417202439728016
+        },
+        {
+          "country": "Kenya",
+          "iso3": "KEN",
+          "prior_ocv_campaign_pre2014jul": 0,
+          "mean_recorded_log_activity": 1.67606979803,
+          "reactive_event_months": 0,
+          "within_sd": 1.165382355511864
+        },
+        {
+          "country": "Malawi",
+          "iso3": "MWI",
+          "prior_ocv_campaign_pre2014jul": 0,
+          "mean_recorded_log_activity": 1.61698018645,
+          "reactive_event_months": 5,
+          "within_sd": 1.0902944477693486
+        },
+        {
+          "country": "Mozambique",
+          "iso3": "MOZ",
+          "prior_ocv_campaign_pre2014jul": 1,
+          "mean_recorded_log_activity": 0.315773467767,
+          "reactive_event_months": 5,
+          "within_sd": 0.6023941040131469
+        },
+        {
+          "country": "Namibia",
+          "iso3": "NAM",
+          "prior_ocv_campaign_pre2014jul": 0,
+          "mean_recorded_log_activity": 0.195183550882,
+          "reactive_event_months": 0,
+          "within_sd": 0.46948588252662665
+        },
+        {
+          "country": "Niger",
+          "iso3": "NER",
+          "prior_ocv_campaign_pre2014jul": 0,
+          "mean_recorded_log_activity": 1.17861732969,
+          "reactive_event_months": 3,
+          "within_sd": 1.258835595515636
+        },
+        {
+          "country": "Nigeria",
+          "iso3": "NGA",
+          "prior_ocv_campaign_pre2014jul": 0,
+          "mean_recorded_log_activity": 3.42991383428,
+          "reactive_event_months": 5,
+          "within_sd": 0.905313749683667
+        },
+        {
+          "country": "Republic of the Congo",
+          "iso3": "COG",
+          "prior_ocv_campaign_pre2014jul": 0,
+          "mean_recorded_log_activity": 0.0,
+          "reactive_event_months": 0,
+          "within_sd": 0.0
+        },
+        {
+          "country": "Sierra Leone",
+          "iso3": "SLE",
+          "prior_ocv_campaign_pre2014jul": 0,
+          "mean_recorded_log_activity": 0.0,
+          "reactive_event_months": 1,
+          "within_sd": 0.0
+        },
+        {
+          "country": "Somalia",
+          "iso3": "SOM",
+          "prior_ocv_campaign_pre2014jul": 0,
+          "mean_recorded_log_activity": 0.53765339735,
+          "reactive_event_months": 2,
+          "within_sd": 0.9707377938559856
+        },
+        {
+          "country": "South Sudan",
+          "iso3": "SSD",
+          "prior_ocv_campaign_pre2014jul": 1,
+          "mean_recorded_log_activity": 2.40768319243,
+          "reactive_event_months": 9,
+          "within_sd": 1.4070657673443636
+        },
+        {
+          "country": "Sudan",
+          "iso3": "SDN",
+          "prior_ocv_campaign_pre2014jul": 1,
+          "mean_recorded_log_activity": 0.0,
+          "reactive_event_months": 3,
+          "within_sd": 0.0
+        },
+        {
+          "country": "Tanzania",
+          "iso3": "TZA",
+          "prior_ocv_campaign_pre2014jul": 1,
+          "mean_recorded_log_activity": 2.15352361783,
+          "reactive_event_months": 2,
+          "within_sd": 1.5952382163391616
+        },
+        {
+          "country": "Uganda",
+          "iso3": "UGA",
+          "prior_ocv_campaign_pre2014jul": 1,
+          "mean_recorded_log_activity": 1.28127277744,
+          "reactive_event_months": 0,
+          "within_sd": 0.8969789318245258
+        },
+        {
+          "country": "Zambia",
+          "iso3": "ZMB",
+          "prior_ocv_campaign_pre2014jul": 0,
+          "mean_recorded_log_activity": 0.376896998375,
+          "reactive_event_months": 4,
+          "within_sd": 0.739417797838573
+        },
+        {
+          "country": "Zimbabwe",
+          "iso3": "ZWE",
+          "prior_ocv_campaign_pre2014jul": 0,
+          "mean_recorded_log_activity": 0.301530933547,
+          "reactive_event_months": 2,
+          "within_sd": 0.6143031602657888
+        }
+      ],
+      "documented_group_sizes": {
+        "zero": 18,
+        "one": 7
+      },
+      "reactive_event_months_by_documented_group": {
+        "zero": 31,
+        "one": 27
+      },
+      "country_level_prior_between_correlation": 0.2159761639091722,
+      "standardized_design_condition_number": 1.2453685604655513
+    },
+    "independent_interval_count_check": {
+      "checked_country_months": 1650,
+      "source_outbreak_records": 999
+    },
+    "fitted_probability_range": [
+      0.01689819343715075,
+      0.12934967582157098
+    ],
+    "one_country_deleted_coefficients": [
+      {
+        "omitted_country": "Angola",
+        "log1p_active_outbreak_months_12m_between": 0.3780604028314052,
+        "log1p_active_outbreak_months_12m_within": 0.03539711478184712,
+        "prior_ocv_campaign_pre2014jul": 0.5511617623201814
+      },
+      {
+        "omitted_country": "Benin",
+        "log1p_active_outbreak_months_12m_between": 0.3782457383642,
+        "log1p_active_outbreak_months_12m_within": 0.035579565765324006,
+        "prior_ocv_campaign_pre2014jul": 0.5506092122072241
+      },
+      {
+        "omitted_country": "Burundi",
+        "log1p_active_outbreak_months_12m_between": 0.39071491926396495,
+        "log1p_active_outbreak_months_12m_within": 0.035708139593024865,
+        "prior_ocv_campaign_pre2014jul": 0.5809302968837574
+      },
+      {
+        "omitted_country": "Cameroon",
+        "log1p_active_outbreak_months_12m_between": 0.3902161099636813,
+        "log1p_active_outbreak_months_12m_within": -0.02401667967416593,
+        "prior_ocv_campaign_pre2014jul": 0.617679439993333
+      },
+      {
+        "omitted_country": "Chad",
+        "log1p_active_outbreak_months_12m_between": 0.39928863967203226,
+        "log1p_active_outbreak_months_12m_within": 0.0331965486958028,
+        "prior_ocv_campaign_pre2014jul": 0.6031178308174905
+      },
+      {
+        "omitted_country": "DR Congo",
+        "log1p_active_outbreak_months_12m_between": 0.4395155495666209,
+        "log1p_active_outbreak_months_12m_within": 0.020002113501576557,
+        "prior_ocv_campaign_pre2014jul": 0.6577699207622931
+      },
+      {
+        "omitted_country": "Ethiopia",
+        "log1p_active_outbreak_months_12m_between": 0.4242401911700959,
+        "log1p_active_outbreak_months_12m_within": 0.1222824017559938,
+        "prior_ocv_campaign_pre2014jul": 0.5064655130495709
+      },
+      {
+        "omitted_country": "Ghana",
+        "log1p_active_outbreak_months_12m_between": 0.3776417226274989,
+        "log1p_active_outbreak_months_12m_within": 0.035355196636531784,
+        "prior_ocv_campaign_pre2014jul": 0.5524047305034436
+      },
+      {
+        "omitted_country": "Guinea",
+        "log1p_active_outbreak_months_12m_between": 0.36864740395214024,
+        "log1p_active_outbreak_months_12m_within": 0.019965840437296996,
+        "prior_ocv_campaign_pre2014jul": 0.648092061759882
+      },
+      {
+        "omitted_country": "Ivory Coast",
+        "log1p_active_outbreak_months_12m_between": 0.3776417226274995,
+        "log1p_active_outbreak_months_12m_within": 0.03535519663653246,
+        "prior_ocv_campaign_pre2014jul": 0.552404730503446
+      },
+      {
+        "omitted_country": "Kenya",
+        "log1p_active_outbreak_months_12m_between": 0.3980558316010362,
+        "log1p_active_outbreak_months_12m_within": 0.03568004594492688,
+        "prior_ocv_campaign_pre2014jul": 0.5062400289315956
+      },
+      {
+        "omitted_country": "Malawi",
+        "log1p_active_outbreak_months_12m_between": 0.3859547523338205,
+        "log1p_active_outbreak_months_12m_within": 0.03437973140759078,
+        "prior_ocv_campaign_pre2014jul": 0.6985898989333498
+      },
+      {
+        "omitted_country": "Mozambique",
+        "log1p_active_outbreak_months_12m_between": 0.4522295406215965,
+        "log1p_active_outbreak_months_12m_within": 0.060776398378865046,
+        "prior_ocv_campaign_pre2014jul": 0.40266604510326814
+      },
+      {
+        "omitted_country": "Namibia",
+        "log1p_active_outbreak_months_12m_between": 0.3775806860785585,
+        "log1p_active_outbreak_months_12m_within": 0.035391189815721924,
+        "prior_ocv_campaign_pre2014jul": 0.5525853527783754
+      },
+      {
+        "omitted_country": "Niger",
+        "log1p_active_outbreak_months_12m_between": 0.3953086691262119,
+        "log1p_active_outbreak_months_12m_within": 0.04621975120286161,
+        "prior_ocv_campaign_pre2014jul": 0.6269767610096274
+      },
+      {
+        "omitted_country": "Nigeria",
+        "log1p_active_outbreak_months_12m_between": 0.3673555229969996,
+        "log1p_active_outbreak_months_12m_within": 0.028306644731182534,
+        "prior_ocv_campaign_pre2014jul": 0.6440818599897412
+      },
+      {
+        "omitted_country": "Republic of the Congo",
+        "log1p_active_outbreak_months_12m_between": 0.3764024048099047,
+        "log1p_active_outbreak_months_12m_within": 0.03532925185349512,
+        "prior_ocv_campaign_pre2014jul": 0.5563291687495767
+      },
+      {
+        "omitted_country": "Sierra Leone",
+        "log1p_active_outbreak_months_12m_between": 0.3907149192639651,
+        "log1p_active_outbreak_months_12m_within": 0.035708139593024185,
+        "prior_ocv_campaign_pre2014jul": 0.5809302968837565
+      },
+      {
+        "omitted_country": "Somalia",
+        "log1p_active_outbreak_months_12m_between": 0.3982490424877495,
+        "log1p_active_outbreak_months_12m_within": -0.023765208354133968,
+        "prior_ocv_campaign_pre2014jul": 0.6019082763823251
+      },
+      {
+        "omitted_country": "South Sudan",
+        "log1p_active_outbreak_months_12m_between": 0.37768592985009514,
+        "log1p_active_outbreak_months_12m_within": 0.01727468128798705,
+        "prior_ocv_campaign_pre2014jul": 0.3705032318605702
+      },
+      {
+        "omitted_country": "Sudan",
+        "log1p_active_outbreak_months_12m_between": 0.41800320967663823,
+        "log1p_active_outbreak_months_12m_within": 0.03571220099297935,
+        "prior_ocv_campaign_pre2014jul": 0.5156572973937865
+      },
+      {
+        "omitted_country": "Tanzania",
+        "log1p_active_outbreak_months_12m_between": 0.3909261334540515,
+        "log1p_active_outbreak_months_12m_within": 0.11895113504500344,
+        "prior_ocv_campaign_pre2014jul": 0.7004404475763323
+      },
+      {
+        "omitted_country": "Uganda",
+        "log1p_active_outbreak_months_12m_between": 0.3637838535356653,
+        "log1p_active_outbreak_months_12m_within": 0.03630803472578101,
+        "prior_ocv_campaign_pre2014jul": 0.7447517689147718
+      },
+      {
+        "omitted_country": "Zambia",
+        "log1p_active_outbreak_months_12m_between": 0.4221443143445805,
+        "log1p_active_outbreak_months_12m_within": 0.06183704075218189,
+        "prior_ocv_campaign_pre2014jul": 0.6637543120614338
+      },
+      {
+        "omitted_country": "Zimbabwe",
+        "log1p_active_outbreak_months_12m_between": 0.40121909708567904,
+        "log1p_active_outbreak_months_12m_within": 0.020746391829016053,
+        "prior_ocv_campaign_pre2014jul": 0.6041131439131435
+      }
+    ],
+    "one_country_deleted_ranges": {
+      "log1p_active_outbreak_months_12m_between": [
+        0.3637838535356653,
+        0.4522295406215965
+      ],
+      "log1p_active_outbreak_months_12m_within": [
+        -0.02401667967416593,
+        0.1222824017559938
+      ],
+      "prior_ocv_campaign_pre2014jul": [
+        0.3705032318605702,
+        0.7447517689147718
+      ]
+    }
+  },
+  "source_sha256": {
+    "analysis/covariates/prior_campaign/active_outbreak_panel_prior_ocv_campaign.csv": "27fde358637336f985a42da62000f24d29c5444b9c17bf3e3b701ec43675eeef",
+    "analysis/covariates/prior_campaign/country_prior_ocv_campaign_pre2014jul.csv": "0a33723528c54f648211f4b8257a414a6b25d7d863f281fbf45702b43055af1a",
+    "analysis/covariates/prior_campaign/source_ledger.json": "b0115f0947cf375f7ac043308aab9bcbe554de93b49a7d070041f79e06b430e3",
+    "analysis/covariates/income/country_income_fy2015.csv": "54e426b075e166b0a36a29dde1a39e3d1ab18004cdc38d41c1e5f5fcbcbf15c8",
+    "analysis/main/outputs/analysis_data/active_outbreak_panel.csv": "7a71ca386e5c653a31a321c28fb63ff299435600addfaf484ccd76dc4c5131c3",
+    "analysis/main/outputs/analysis_data/active_outbreak_results_seeded.csv": "7564c3cbe087e190544d3dea0c25b5eea42a1d771438fd64b7a24e5b52e436bd",
+    "data/source/zheng_outbreak_records.csv": "d9d29e188f53b53f27a934a47c40531da187f09b8dde8da46046745b6800fc34",
+    "analysis/main/code/research_pipeline/results/wild_cluster_bootstrap.py": "e61809dbd5c9ee0512fb1eff59f8b9f98e7872286a6b27019588ddfd47dd6bb5",
+    "analysis/covariates/prior_campaign/run_prior_campaign_sensitivity.py": "baab7175e8e1f1d1c128e209213cb8f914db3088c721334604e51549d365e717",
+    "analysis/covariates/build_panels.py": "1dd04173c2401b9afe2b83262dddca27b3ae69996646cab86fb0c8c1ca404386",
+    "analysis/covariates/prior_campaign/method_protocol.md": "7f2e49d8e98e8acec3d23e47e7b0cf5be1709cf73076f11a77e9416b323c1447"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "request_months": 22,
+  "request_record_ids": 24,
+  "countries": 12,
+  "full_reactive_request_months": 58,
+  "zero_prior_percent": 37.93103448275862,
+  "zero_current_month": 20,
+  "prior_activity_status": {
+    "documented": 17,
+    "not-established": 5
+  },
+  "documented_among_current_zero": 15,
+  "zero_within_deviation": 5,
+  "negative_within_deviation": 17,
+  "interpretation": "Counts concern country/window documentation, not requests explained, independent outbreaks, or surveillance sensitivity.",
+  "no_recoding": true
+}

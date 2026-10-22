@@ -1,0 +1,107 @@
+{
+  "scope": "Queries retained for the resumed 17 October session only; earlier-turn searches are not reconstructed as an execution log.",
+  "queries": [
+    {
+      "date": "2026-10-17",
+      "query": "Burundi cholera June November 2019 MSF",
+      "scope": "country baseline",
+      "result_note": "Search executed; candidate sources require direct passage checks."
+    },
+    {
+      "date": "2026-10-17",
+      "query": "Chad cholera July 2013 June 2014 oral vaccine request",
+      "scope": "country baseline",
+      "result_note": "Search executed; candidate sources require direct passage checks."
+    },
+    {
+      "date": "2026-10-17",
+      "query": "Ethiopia Gambella cholera vaccination July 2014 MSF",
+      "scope": "country baseline",
+      "result_note": "Search executed; candidate sources require direct passage checks."
+    },
+    {
+      "date": "2026-10-17",
+      "query": "Malawi cholera February March 2015 ICG 210000",
+      "scope": "country baseline",
+      "result_note": "Search executed; candidate sources require direct passage checks."
+    },
+    {
+      "date": "2026-10-17",
+      "query": "Mozambique cholera 2015 2016 2017 2019 oral vaccine request Nampula",
+      "scope": "country baseline",
+      "result_note": "Search executed; candidate sources require direct passage checks."
+    },
+    {
+      "date": "2026-10-17",
+      "query": "Niger cholera January 2015 January 2016 oral vaccine",
+      "scope": "country baseline",
+      "result_note": "Search executed; candidate sources require direct passage checks."
+    },
+    {
+      "date": "2026-10-17",
+      "query": "Sierra Leone cholera August 2019 vaccine request floods",
+      "scope": "country baseline",
+      "result_note": "Search executed; candidate sources require direct passage checks."
+    },
+    {
+      "date": "2026-10-17",
+      "query": "South Sudan Renk cholera vaccination November 2019",
+      "scope": "country baseline",
+      "result_note": "Search executed; candidate sources require direct passage checks."
+    },
+    {
+      "date": "2026-10-17",
+      "query": "Sudan cholera preparedness August 2015 outbreak August September October 2019 WHO",
+      "scope": "country baseline",
+      "result_note": "Search executed; candidate sources require direct passage checks."
+    },
+    {
+      "date": "2026-10-17",
+      "query": "Tanzania Kigoma cholera January May June 2015 WHO vaccine",
+      "scope": "country baseline",
+      "result_note": "Search executed; candidate sources require direct passage checks."
+    },
+    {
+      "date": "2026-10-17",
+      "query": "Zambia Lusaka cholera February March 2016 598131 January 2019",
+      "scope": "country baseline",
+      "result_note": "Search executed; candidate sources require direct passage checks."
+    },
+    {
+      "date": "2026-10-17",
+      "query": "Zimbabwe Chegutu January 2018 cholera Harare September 2018 WHO",
+      "scope": "country baseline",
+      "result_note": "Search executed; candidate sources require direct passage checks."
+    },
+    {
+      "date": "2026-10-17",
+      "query": "site.afro.who.int Chegutu cholera January 2018 6 January",
+      "scope": "targeted follow-up",
+      "result_note": "Executed earlier in this resumed turn; no negative inference from uninformative results."
+    },
+    {
+      "date": "2026-10-17",
+      "query": "site.who.int Chad cholera 2014 July vaccine 320000",
+      "scope": "targeted follow-up",
+      "result_note": "Executed earlier in this resumed turn; no negative inference from uninformative results."
+    },
+    {
+      "date": "2026-10-17",
+      "query": "Sierra Leone August 2019 cholera oral vaccine 1325504",
+      "scope": "targeted follow-up",
+      "result_note": "Executed earlier in this resumed turn; no negative inference from uninformative results."
+    },
+    {
+      "date": "2026-10-17",
+      "query": "site.reliefweb.int Chad cholera 2014 June July 320000 vaccine",
+      "scope": "targeted follow-up",
+      "result_note": "Executed earlier in this resumed turn; no negative inference from uninformative results."
+    },
+    {
+      "date": "2026-10-17",
+      "query": "site.reliefweb.int Sierra Leone August 2019 cholera vaccination floods request",
+      "scope": "targeted follow-up",
+      "result_note": "Executed earlier in this resumed turn; no negative inference from uninformative results."
+    }
+  ]
+}
