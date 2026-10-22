@@ -1,0 +1,83 @@
+{
+  "cutoff_exclusive": "2014-07-01",
+  "definition": "At least one documented mass oral cholera vaccine campaign with vaccine administered before the cutoff; any purpose or funding source",
+  "zero_meaning": "No qualifying pre-cutoff campaign documented in the audited historical sources; not verified absence",
+  "audit_revision": "2026-10-13: added documented November 2013 Kalemie administration; definition, outcome and frozen outbreak predictors unchanged",
+  "zero_country_audit": "zero_country_literature_audit_2026-10-13.md",
+  "inventory_sources": [
+    "https://www.who.int/docs/default-source/documents/publications/use-of-oral-cholera-vaccine-in-humanitarian-emergencies.pdf",
+    "https://cdn.who.int/media/docs/default-source/immunization/sage/2017/sage-meeting-of-april-2017/background-docs/session-use-of-oral-cholera-vaccines/ocv_background_document_sagewg_finalversion_editedps_.pdf",
+    "https://pubmed.ncbi.nlm.nih.gov/25552772/"
+  ],
+  "documented_positive_countries": [
+    {
+      "country_panel": "DR Congo",
+      "iso3": "COD",
+      "first_campaign_year": 2013,
+      "first_documented_administration_date": "2013-11-25",
+      "site": "Kalemie (HGR and parts of Kituku)",
+      "basis": "Massing et al. (2018) documents actual vaccine distribution for three days in November 2013 before campaign interruption; survey Methods and Results confirm 2013 recipients",
+      "specific_source": "https://journals.plos.org/plosntds/article?id=10.1371/journal.pntd.0006369",
+      "additional_source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5957443/",
+      "qualifying_source_sections": "Introduction campaign chronology; Methods strata 2; Results vaccination coverage strata 2",
+      "interrupted_campaign_counts": true
+    },
+    {
+      "country_panel": "Uganda",
+      "iso3": "UGA",
+      "first_campaign_year": 1997,
+      "site": "Adjumani district refugee camp",
+      "basis": "WHO SAGE Table 3 reports 35,613 first-dose and 27,607 second-dose recipients",
+      "specific_source": "https://cdn.who.int/media/docs/default-source/immunization/sage/2017/sage-meeting-of-april-2017/background-docs/session-use-of-oral-cholera-vaccines/ocv_background_document_sagewg_finalversion_editedps_.pdf"
+    },
+    {
+      "country_panel": "Mozambique",
+      "iso3": "MOZ",
+      "first_campaign_year": 2003,
+      "site": "Beira",
+      "basis": "WHO SAGE Table 3 reports 14,164 first-dose and 11,070 second-dose recipients in 2003–04",
+      "specific_source": "https://cdn.who.int/media/docs/default-source/immunization/sage/2017/sage-meeting-of-april-2017/background-docs/session-use-of-oral-cholera-vaccines/ocv_background_document_sagewg_finalversion_editedps_.pdf"
+    },
+    {
+      "country_panel": "Sudan",
+      "iso3": "SDN",
+      "first_campaign_year": 2004,
+      "site": "South Darfur internally displaced persons camps",
+      "basis": "WHO Eastern Mediterranean report documents about 40,332 fully vaccinated persons in 2004",
+      "specific_source": "https://applications.emro.who.int/docs/dsa270.pdf"
+    },
+    {
+      "country_panel": "Tanzania",
+      "iso3": "TZA",
+      "first_campaign_year": 2009,
+      "site": "Zanzibar",
+      "basis": "WHO SAGE Table 3 reports 27,678 first-dose and 23,921 second-dose recipients",
+      "specific_source": "https://cdn.who.int/media/docs/default-source/immunization/sage/2017/sage-meeting-of-april-2017/background-docs/session-use-of-oral-cholera-vaccines/ocv_background_document_sagewg_finalversion_editedps_.pdf"
+    },
+    {
+      "country_panel": "Guinea",
+      "iso3": "GIN",
+      "first_campaign_year": 2012,
+      "site": "Boffa and Forecariah",
+      "basis": "Published implementation report documents administration during the 2012 outbreak",
+      "specific_source": "https://journals.plos.org/plosntds/article?id=10.1371/journal.pntd.0002465"
+    },
+    {
+      "country_panel": "South Sudan",
+      "iso3": "SSD",
+      "first_campaign_year": 2012,
+      "site": "Maban camps; 2014 IDP sites",
+      "basis": "Published Maban implementation study plus 2014 stockpile campaign case study; both pre-cutoff",
+      "specific_source": "https://pubmed.ncbi.nlm.nih.gov/25311798/",
+      "additional_source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4648513/"
+    }
+  ],
+  "boundary_case": {
+    "country_panel": "Ethiopia",
+    "iso3": "ETH",
+    "june_2014_request_is_not_campaign": true,
+    "first_large_scale_implementation_after_cutoff": "First-dose round: 24 July–2 August 2014; second round began 15 August 2014",
+    "first_documented_administration_date": "2014-07-24",
+    "source": "https://www.msf.org/ethiopia-tens-thousands-south-sudanese-refugees-receive-cholera-vaccine"
+  }
+}

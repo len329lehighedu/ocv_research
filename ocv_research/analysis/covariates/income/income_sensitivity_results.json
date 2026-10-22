@@ -1,0 +1,461 @@
+{
+  "status": "optional_sensitivity_not_frozen_main",
+  "formula": "logit P(reactive_request_cm=1) = intercept + beta_B * between12_c + beta_W * within12_cm + gamma * low_income_fy2015_c",
+  "n_countries": 25,
+  "n_country_months": 1650,
+  "n_reactive_event_months": 58,
+  "asymptotic_ci": "Country-clustered sandwich, use_correction=False; 95% normal CI",
+  "bootstrap": "Frozen restricted score-linearized WCLR-C; Rademacher; CV1 observed/studentized t",
+  "aic": 489.5580267546453,
+  "coefficients": {
+    "log1p_active_outbreak_months_12m_between": {
+      "coefficient_log_odds": 0.4512738023854955,
+      "odds_ratio": 1.5703111781837862,
+      "ci95_log_odds_cluster_asymptotic": [
+        0.2573250371716188,
+        0.6452225675993722
+      ],
+      "ci95_odds_ratio_cluster_asymptotic": [
+        1.2934654828020997,
+        1.9064112874407722
+      ],
+      "p_wclr_c_rademacher": 0.00015,
+      "t_cv1_for_wclr_c": 4.464176927071674,
+      "bootstrap_reps": 99999,
+      "bootstrap_seed": 20261128
+    },
+    "log1p_active_outbreak_months_12m_within": {
+      "coefficient_log_odds": 0.033649467540637135,
+      "odds_ratio": 1.0342220147953363,
+      "ci95_log_odds_cluster_asymptotic": [
+        -0.20750286353263936,
+        0.27480179861391363
+      ],
+      "ci95_odds_ratio_cluster_asymptotic": [
+        0.8126109148318883,
+        1.3162697625204862
+      ],
+      "p_wclr_c_rademacher": 0.79153,
+      "t_cv1_for_wclr_c": 0.2677164313750078,
+      "bootstrap_reps": 99999,
+      "bootstrap_seed": 20261129
+    },
+    "low_income_fy2015": {
+      "coefficient_log_odds": -0.19864602233809592,
+      "odds_ratio": 0.8198400470389169,
+      "ci95_log_odds_cluster_asymptotic": [
+        -0.9108397985415254,
+        0.5135477538653336
+      ],
+      "ci95_odds_ratio_cluster_asymptotic": [
+        0.4021863266800751,
+        1.6712097307659968
+      ]
+    }
+  },
+  "frozen_benchmark_reproduced": {
+    "between_coefficient": 0.44336633212339865,
+    "within_coefficient": 0.033050499231628776,
+    "aic": 488.07228780768884,
+    "source_bootstrap_p_between": 7e-05,
+    "source_bootstrap_p_within": 0.7918
+  },
+  "diagnostics": {
+    "countries": [
+      {
+        "country": "Angola",
+        "income_group": "UMC",
+        "low_income_fy2015": 0,
+        "mean_recorded_log_activity": 0.264340341661,
+        "reactive_event_months": 0,
+        "within_sd": 0.5219590230499483
+      },
+      {
+        "country": "Benin",
+        "income_group": "LIC",
+        "low_income_fy2015": 1,
+        "mean_recorded_log_activity": 0.290478572101,
+        "reactive_event_months": 0,
+        "within_sd": 0.7334336623175216
+      },
+      {
+        "country": "Burundi",
+        "income_group": "LIC",
+        "low_income_fy2015": 1,
+        "mean_recorded_log_activity": 0.0,
+        "reactive_event_months": 1,
+        "within_sd": 0.0
+      },
+      {
+        "country": "Cameroon",
+        "income_group": "LMC",
+        "low_income_fy2015": 0,
+        "mean_recorded_log_activity": 1.65934756123,
+        "reactive_event_months": 3,
+        "within_sd": 1.3334228069529936
+      },
+      {
+        "country": "Chad",
+        "income_group": "LIC",
+        "low_income_fy2015": 1,
+        "mean_recorded_log_activity": 0.440650634793,
+        "reactive_event_months": 2,
+        "within_sd": 0.833051683678372
+      },
+      {
+        "country": "DR Congo",
+        "income_group": "LIC",
+        "low_income_fy2015": 1,
+        "mean_recorded_log_activity": 3.92809721439,
+        "reactive_event_months": 7,
+        "within_sd": 0.44010349736777304
+      },
+      {
+        "country": "Ethiopia",
+        "income_group": "LIC",
+        "low_income_fy2015": 1,
+        "mean_recorded_log_activity": 3.4751292106,
+        "reactive_event_months": 3,
+        "within_sd": 2.396070215156567
+      },
+      {
+        "country": "Ghana",
+        "income_group": "LMC",
+        "low_income_fy2015": 0,
+        "mean_recorded_log_activity": 0.204106508128,
+        "reactive_event_months": 0,
+        "within_sd": 0.4172024397280161
+      },
+      {
+        "country": "Guinea",
+        "income_group": "LIC",
+        "low_income_fy2015": 1,
+        "mean_recorded_log_activity": 0.0604391522207,
+        "reactive_event_months": 1,
+        "within_sd": 0.24184295813529702
+      },
+      {
+        "country": "Ivory Coast",
+        "income_group": "LMC",
+        "low_income_fy2015": 0,
+        "mean_recorded_log_activity": 0.204106508128,
+        "reactive_event_months": 0,
+        "within_sd": 0.417202439728016
+      },
+      {
+        "country": "Kenya",
+        "income_group": "LIC",
+        "low_income_fy2015": 1,
+        "mean_recorded_log_activity": 1.67606979803,
+        "reactive_event_months": 0,
+        "within_sd": 1.165382355511864
+      },
+      {
+        "country": "Malawi",
+        "income_group": "LIC",
+        "low_income_fy2015": 1,
+        "mean_recorded_log_activity": 1.61698018645,
+        "reactive_event_months": 5,
+        "within_sd": 1.0902944477693486
+      },
+      {
+        "country": "Mozambique",
+        "income_group": "LIC",
+        "low_income_fy2015": 1,
+        "mean_recorded_log_activity": 0.315773467767,
+        "reactive_event_months": 5,
+        "within_sd": 0.6023941040131469
+      },
+      {
+        "country": "Namibia",
+        "income_group": "UMC",
+        "low_income_fy2015": 0,
+        "mean_recorded_log_activity": 0.195183550882,
+        "reactive_event_months": 0,
+        "within_sd": 0.46948588252662665
+      },
+      {
+        "country": "Niger",
+        "income_group": "LIC",
+        "low_income_fy2015": 1,
+        "mean_recorded_log_activity": 1.17861732969,
+        "reactive_event_months": 3,
+        "within_sd": 1.258835595515636
+      },
+      {
+        "country": "Nigeria",
+        "income_group": "LMC",
+        "low_income_fy2015": 0,
+        "mean_recorded_log_activity": 3.42991383428,
+        "reactive_event_months": 5,
+        "within_sd": 0.905313749683667
+      },
+      {
+        "country": "Republic of the Congo",
+        "income_group": "LMC",
+        "low_income_fy2015": 0,
+        "mean_recorded_log_activity": 0.0,
+        "reactive_event_months": 0,
+        "within_sd": 0.0
+      },
+      {
+        "country": "Sierra Leone",
+        "income_group": "LIC",
+        "low_income_fy2015": 1,
+        "mean_recorded_log_activity": 0.0,
+        "reactive_event_months": 1,
+        "within_sd": 0.0
+      },
+      {
+        "country": "Somalia",
+        "income_group": "LIC",
+        "low_income_fy2015": 1,
+        "mean_recorded_log_activity": 0.53765339735,
+        "reactive_event_months": 2,
+        "within_sd": 0.9707377938559856
+      },
+      {
+        "country": "South Sudan",
+        "income_group": "LMC",
+        "low_income_fy2015": 0,
+        "mean_recorded_log_activity": 2.40768319243,
+        "reactive_event_months": 9,
+        "within_sd": 1.4070657673443636
+      },
+      {
+        "country": "Sudan",
+        "income_group": "LMC",
+        "low_income_fy2015": 0,
+        "mean_recorded_log_activity": 0.0,
+        "reactive_event_months": 3,
+        "within_sd": 0.0
+      },
+      {
+        "country": "Tanzania",
+        "income_group": "LIC",
+        "low_income_fy2015": 1,
+        "mean_recorded_log_activity": 2.15352361783,
+        "reactive_event_months": 2,
+        "within_sd": 1.5952382163391616
+      },
+      {
+        "country": "Uganda",
+        "income_group": "LIC",
+        "low_income_fy2015": 1,
+        "mean_recorded_log_activity": 1.28127277744,
+        "reactive_event_months": 0,
+        "within_sd": 0.8969789318245258
+      },
+      {
+        "country": "Zambia",
+        "income_group": "LMC",
+        "low_income_fy2015": 0,
+        "mean_recorded_log_activity": 0.376896998375,
+        "reactive_event_months": 4,
+        "within_sd": 0.739417797838573
+      },
+      {
+        "country": "Zimbabwe",
+        "income_group": "LIC",
+        "low_income_fy2015": 1,
+        "mean_recorded_log_activity": 0.301530933547,
+        "reactive_event_months": 2,
+        "within_sd": 0.6143031602657888
+      }
+    ],
+    "income_between_correlation_country_level": 0.11442475958400342,
+    "standardized_design_condition_number": 1.1217927873361833,
+    "event_months_by_binary_income_group": {
+      "0": 24,
+      "1": 34
+    },
+    "zero_between_countries": [
+      "Burundi",
+      "Republic of the Congo",
+      "Sierra Leone",
+      "Sudan"
+    ],
+    "independent_interval_count_check": {
+      "checked_country_months": 1650,
+      "source_outbreak_records": 999
+    },
+    "one_country_deleted_coefficients": [
+      {
+        "omitted_country": "Angola",
+        "log1p_active_outbreak_months_12m_between": 0.43108912054087,
+        "log1p_active_outbreak_months_12m_within": 0.03366023094980092,
+        "low_income_fy2015": -0.2665360116354727
+      },
+      {
+        "omitted_country": "Benin",
+        "log1p_active_outbreak_months_12m_between": 0.43069036627901974,
+        "log1p_active_outbreak_months_12m_within": 0.03349675699197329,
+        "low_income_fy2015": -0.14813121852360223
+      },
+      {
+        "omitted_country": "Burundi",
+        "log1p_active_outbreak_months_12m_between": 0.44806182542322526,
+        "log1p_active_outbreak_months_12m_within": 0.03359017700154197,
+        "low_income_fy2015": -0.1918130292736264
+      },
+      {
+        "omitted_country": "Cameroon",
+        "log1p_active_outbreak_months_12m_between": 0.4513181404340494,
+        "log1p_active_outbreak_months_12m_within": -0.022591062880142433,
+        "low_income_fy2015": -0.1955892767586872
+      },
+      {
+        "omitted_country": "Chad",
+        "log1p_active_outbreak_months_12m_between": 0.4595912401753761,
+        "log1p_active_outbreak_months_12m_within": 0.031184265334326722,
+        "low_income_fy2015": -0.2207468003609337
+      },
+      {
+        "omitted_country": "DR Congo",
+        "log1p_active_outbreak_months_12m_between": 0.4308063129522557,
+        "log1p_active_outbreak_months_12m_within": 0.02059552297062314,
+        "low_income_fy2015": -0.22502620770912204
+      },
+      {
+        "omitted_country": "Ethiopia",
+        "log1p_active_outbreak_months_12m_between": 0.49428136202083417,
+        "log1p_active_outbreak_months_12m_within": 0.12266700763879622,
+        "low_income_fy2015": -0.12092466342028343
+      },
+      {
+        "omitted_country": "Ghana",
+        "log1p_active_outbreak_months_12m_between": 0.4306734086441657,
+        "log1p_active_outbreak_months_12m_within": 0.03359837214865043,
+        "low_income_fy2015": -0.26448759919448833
+      },
+      {
+        "omitted_country": "Guinea",
+        "log1p_active_outbreak_months_12m_between": 0.44773741524953414,
+        "log1p_active_outbreak_months_12m_within": 0.018729764408043276,
+        "low_income_fy2015": -0.19039295317564708
+      },
+      {
+        "omitted_country": "Ivory Coast",
+        "log1p_active_outbreak_months_12m_between": 0.43067340864416576,
+        "log1p_active_outbreak_months_12m_within": 0.03359837214865035,
+        "low_income_fy2015": -0.2644875991944865
+      },
+      {
+        "omitted_country": "Kenya",
+        "log1p_active_outbreak_months_12m_between": 0.44657662458046543,
+        "log1p_active_outbreak_months_12m_within": 0.03365994467471658,
+        "low_income_fy2015": -0.11808445678384485
+      },
+      {
+        "omitted_country": "Malawi",
+        "log1p_active_outbreak_months_12m_between": 0.45856636724613753,
+        "log1p_active_outbreak_months_12m_within": 0.03202164052062884,
+        "low_income_fy2015": -0.29196887692174345
+      },
+      {
+        "omitted_country": "Mozambique",
+        "log1p_active_outbreak_months_12m_between": 0.5113793193540105,
+        "log1p_active_outbreak_months_12m_within": 0.05955332927438912,
+        "low_income_fy2015": -0.3495373681979369
+      },
+      {
+        "omitted_country": "Namibia",
+        "log1p_active_outbreak_months_12m_between": 0.43061340751554,
+        "log1p_active_outbreak_months_12m_within": 0.03363999743492964,
+        "low_income_fy2015": -0.26419251949380457
+      },
+      {
+        "omitted_country": "Niger",
+        "log1p_active_outbreak_months_12m_between": 0.4584092196788325,
+        "log1p_active_outbreak_months_12m_within": 0.04333008941929245,
+        "low_income_fy2015": -0.23599574053483358
+      },
+      {
+        "omitted_country": "Nigeria",
+        "log1p_active_outbreak_months_12m_between": 0.4877663536392584,
+        "log1p_active_outbreak_months_12m_within": 0.02516934059680762,
+        "low_income_fy2015": -0.3021765618892293
+      },
+      {
+        "omitted_country": "Republic of the Congo",
+        "log1p_active_outbreak_months_12m_between": 0.42950816236719075,
+        "log1p_active_outbreak_months_12m_within": 0.033532460778797665,
+        "low_income_fy2015": -0.2579967327482884
+      },
+      {
+        "omitted_country": "Sierra Leone",
+        "log1p_active_outbreak_months_12m_between": 0.4480618254232253,
+        "log1p_active_outbreak_months_12m_within": 0.03359017700154102,
+        "low_income_fy2015": -0.19181302927362942
+      },
+      {
+        "omitted_country": "Somalia",
+        "log1p_active_outbreak_months_12m_between": 0.45826989077377706,
+        "log1p_active_outbreak_months_12m_within": -0.022344563463409777,
+        "low_income_fy2015": -0.21801633692687733
+      },
+      {
+        "omitted_country": "South Sudan",
+        "log1p_active_outbreak_months_12m_between": 0.39772667661091893,
+        "log1p_active_outbreak_months_12m_within": 0.01606995009823152,
+        "low_income_fy2015": 0.12582984017246773
+      },
+      {
+        "omitted_country": "Sudan",
+        "log1p_active_outbreak_months_12m_between": 0.47650097005992215,
+        "log1p_active_outbreak_months_12m_within": 0.03378697411526185,
+        "low_income_fy2015": -0.12843536530619365
+      },
+      {
+        "omitted_country": "Tanzania",
+        "log1p_active_outbreak_months_12m_between": 0.45223216007035977,
+        "log1p_active_outbreak_months_12m_within": 0.10514717526868574,
+        "low_income_fy2015": -0.1676705827203338
+      },
+      {
+        "omitted_country": "Uganda",
+        "log1p_active_outbreak_months_12m_between": 0.43952440743096255,
+        "log1p_active_outbreak_months_12m_within": 0.03325998113748063,
+        "low_income_fy2015": -0.12822433763626156
+      },
+      {
+        "omitted_country": "Zambia",
+        "log1p_active_outbreak_months_12m_between": 0.479344917108589,
+        "log1p_active_outbreak_months_12m_within": 0.05672263627604865,
+        "low_income_fy2015": -0.09072640633251998
+      },
+      {
+        "omitted_country": "Zimbabwe",
+        "log1p_active_outbreak_months_12m_between": 0.4618718166447496,
+        "log1p_active_outbreak_months_12m_within": 0.019495731681409972,
+        "low_income_fy2015": -0.22424754953356404
+      }
+    ],
+    "one_country_deleted_ranges": {
+      "log1p_active_outbreak_months_12m_between": [
+        0.39772667661091893,
+        0.5113793193540105
+      ],
+      "log1p_active_outbreak_months_12m_within": [
+        -0.022591062880142433,
+        0.12266700763879622
+      ],
+      "low_income_fy2015": [
+        -0.3495373681979369,
+        0.12582984017246773
+      ]
+    },
+    "fitted_probability_range": [
+      0.017760593268958336,
+      0.09910233616423379
+    ]
+  },
+  "source_sha256": {
+    "analysis/covariates/income/active_outbreak_panel_income_fy2015.csv": "8be16b0ca393a138809d1e7a7acec9f8a00fe71fefa18f30a1c1a6a90cc314c6",
+    "analysis/covariates/income/country_income_fy2015.csv": "54e426b075e166b0a36a29dde1a39e3d1ab18004cdc38d41c1e5f5fcbcbf15c8",
+    "analysis/main/outputs/analysis_data/active_outbreak_panel.csv": "7a71ca386e5c653a31a321c28fb63ff299435600addfaf484ccd76dc4c5131c3",
+    "data/source/zheng_outbreak_records.csv": "d9d29e188f53b53f27a934a47c40531da187f09b8dde8da46046745b6800fc34",
+    "analysis/main/outputs/analysis_data/active_outbreak_results_seeded.csv": "7564c3cbe087e190544d3dea0c25b5eea42a1d771438fd64b7a24e5b52e436bd",
+    "analysis/main/code/research_pipeline/results/wild_cluster_bootstrap.py": "e61809dbd5c9ee0512fb1eff59f8b9f98e7872286a6b27019588ddfd47dd6bb5"
+  }
+}

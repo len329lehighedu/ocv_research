@@ -1,0 +1,9 @@
+stage,change_doses,cumulative_doses
+Requested,89088648,89088648
+Not approved,-16467152,72621496
+Cancelled,-2474806,70146690
+No logged decision,-10272002,59874688
+Partial-approval shortfall,-6642396,53232292
+Tanzania: approved excess,90000,53322292
+Malawi: approved with missing requested dose,676000,53998292
+Approved,53998292,53998292

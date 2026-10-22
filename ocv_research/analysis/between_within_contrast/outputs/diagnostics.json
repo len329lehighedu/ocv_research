@@ -1,0 +1,20 @@
+{
+  "original_converged": true,
+  "equivalent_converged": true,
+  "restricted_converged": true,
+  "original_log_likelihood": -241.03614390384442,
+  "equivalent_log_likelihood": -241.0361439038444,
+  "restricted_log_likelihood": -244.3105987819401,
+  "maximum_probability_disagreement": 2.498001805406602e-16,
+  "maximum_independent_mle_disagreement": 6.072919944699606e-13,
+  "restricted_nuisance_score_max_abs": 1.4631629241534938e-12,
+  "original_design_condition": 2.550469365458968,
+  "restricted_information_condition": 12.175741396406599,
+  "probe_reps": 513,
+  "probe_two_sided_p": 0.011673151750972763,
+  "max_direct_vs_equivalent_bootstrap_t_difference": 9.325873406851315e-15,
+  "reverse_contrast_probe": "PASS",
+  "fixed_seed_full_repeat": "PASS",
+  "canonical_hashes_unchanged": true,
+  "warnings": []
+}

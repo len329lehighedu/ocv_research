@@ -1,0 +1,18 @@
+{
+  "source_sha256": {
+    "analysis/main/outputs/analysis_data/active_outbreak_results_seeded.csv": "7564c3cbe087e190544d3dea0c25b5eea42a1d771438fd64b7a24e5b52e436bd",
+    "analysis/covariates/income/income_sensitivity_results.json": "e8dd6872a92343e1f128f136e7593e8ae82556e6574a049966f69e95458b99a5",
+    "analysis/covariates/expenditure/ihme_2013/ihme_expenditure_sensitivity_results.json": "76b43f26766296fc50df76bd24a6e85106d7e1d9cb378bc82a623b074749efa7",
+    "analysis/covariates/prior_campaign/prior_campaign_sensitivity_results.json": "0c75465e7866a717addf93fbc457ecfebbae5d52e43a28e136b2d3bd147498a8"
+  },
+  "script_sha256": "70f27804539e97c94cf7b50d49491fa9427efe69ee629a14274faa1b44c7a03d",
+  "model_count": 5,
+  "plotted_estimate_count": 10,
+  "corrected_prior_positive_country_count": 7,
+  "models_refitted": false,
+  "dpi": 300,
+  "figsize_inches": [
+    14,
+    7.2
+  ]
+}
