@@ -1,11 +1,6 @@
-"""Robustness coefficient plot in the supplied three-column, eight-row layout.
-
-Uses the seeded active-outbreak results. Estimates and asymptotic CIs are
-multiplied by the full 25-country predictor-component SD for each lag window.
-The reference SD is held fixed across samples and outcomes, not re-estimated
-after country exclusions. Between and within components retain separate SDs.
-Bootstrap p-values remain in the results table, not in the plotted whiskers.
-"""
+"""Draw robustness coefficients from saved model estimates; do not refit.
+Manuscript: Results 3.3; Figure 2.
+Use the full-25-country reference SD for each window and component in every sample."""
 
 from __future__ import annotations
 
@@ -29,12 +24,13 @@ LAGS = (1, 3, 6, 12)
 SAMPLES = (25, 23, 22)
 COMPONENTS = ("between", "within")
 COMPONENT_STYLES = {
-    "between": ("#28648a", 0.38, "Between"),
-    "within": ("#d66035", -0.38, "Within"),
+    "between": ("#3b6f94", 0.38, "Between"),
+    "within": ("#c75b35", -0.38, "Within"),
 }
 
 
 def read_results(path: Path) -> dict[tuple[str, str, int, int], dict[str, float]]:
+    """Load all estimates and apply the full-sample reference SD within each window/component."""
     results = {}
     with path.open(newline="", encoding="utf-8-sig") as handle:
         for raw in csv.DictReader(handle):
@@ -77,6 +73,7 @@ def read_results(path: Path) -> dict[tuple[str, str, int, int], dict[str, float]
         raise ValueError(f"Expected 48 estimates; missing={expected - set(results)}")
     for component in COMPONENTS:
         for lag in LAGS:
+            # Fix the reference unit before comparing samples or request outcomes.
             reference_sd = results[(OUTCOMES[0], component, lag, 25)]["original_sample_sd"]
             other_sd = results[(OUTCOMES[1], component, lag, 25)]["original_sample_sd"]
             if not math.isclose(reference_sd, other_sd, rel_tol=1e-10):
@@ -86,20 +83,28 @@ def read_results(path: Path) -> dict[tuple[str, str, int, int], dict[str, float]
                     value = results[(outcome, component, lag, sample)]
                     value["reference_sd_25"] = reference_sd
                     for field in ("beta", "low", "high"):
+                        # Scale the coefficient and both CI endpoints by the same positive SD.
                         value[field] *= reference_sd
     return results
 
 
 def draw(results: dict, output: Path) -> None:
+    """Plot the two outcomes, four windows and three samples with their saved CIs."""
     plt.rcParams.update({
-        "font.family": "DejaVu Sans",
+        "font.family": "Arial",
         "font.size": 10,
-        "axes.titlesize": 12,
+        "axes.labelcolor": "#303030",
+        "axes.edgecolor": "#303030",
+        "axes.linewidth": 0.8,
         "xtick.labelsize": 9,
         "ytick.labelsize": 10,
+        "xtick.color": "#303030",
+        "ytick.color": "#303030",
+        "xtick.major.width": 0.8,
+        "ytick.major.width": 0.8,
         "savefig.dpi": 300,
     })
-    fig, axes = plt.subplots(8, 3, figsize=(12.4, 13.4), sharex=True, sharey=True)
+    fig, axes = plt.subplots(8, 3, figsize=(12.4, 12.3), sharex=True, sharey=True)
 
     lows = [value["low"] for value in results.values()]
     highs = [value["high"] for value in results.values()]
@@ -111,8 +116,8 @@ def draw(results: dict, output: Path) -> None:
             row_index = outcome_index * len(LAGS) + lag_index
             for sample_index, sample in enumerate(SAMPLES):
                 ax = axes[row_index, sample_index]
-                ax.axvline(0, color="#687a86", linestyle="--", linewidth=1, zorder=1)
-                ax.grid(axis="x", color="#dfe6ea", linewidth=0.8, zorder=0)
+                ax.axvline(0, color="#7b8389", linestyle=(0, (4, 3)), linewidth=0.9, zorder=1)
+                ax.grid(axis="x", color="#e9e9e9", linewidth=0.45, zorder=0)
                 for component, (color, y, _) in COMPONENT_STYLES.items():
                     value = results[(outcome, component, lag, sample)]
                     ax.errorbar(
@@ -120,20 +125,23 @@ def draw(results: dict, output: Path) -> None:
                         xerr=[[value["beta"] - value["low"]],
                               [value["high"] - value["beta"]]],
                         fmt="o", color=color, ecolor=color, markersize=5.2,
-                        capsize=2.7, elinewidth=1.45, markeredgewidth=0.7,
+                        capsize=2.7, elinewidth=1.35, markeredgewidth=0.7,
                         zorder=3,
                     )
                 ax.set_xlim(*x_limits)
                 ax.set_ylim(-1.05, 1.05)
                 ax.set_yticks([])
                 ax.spines[["top", "left", "right"]].set_visible(False)
-                ax.spines["bottom"].set_color("#6c7e89")
-                ax.tick_params(axis="x", length=3, color="#687a86")
+                ax.tick_params(axis="x", length=3)
                 if sample_index == 0:
                     ax.set_ylabel(f"{lag}m", rotation=0, labelpad=31,
                                   va="center", weight="medium")
                 if row_index == 0:
-                    ax.set_title(f"{sample} countries", weight="semibold", pad=11)
+                    # Sample identifiers are column labels, not figure titles.
+                    sample_axis = ax.secondary_xaxis("top")
+                    sample_axis.set_xticks([])
+                    sample_axis.spines["top"].set_visible(False)
+                    sample_axis.set_xlabel(f"{sample} countries", weight="semibold", labelpad=11)
                 if row_index != 7:
                     ax.tick_params(axis="x", labelbottom=False)
 
@@ -142,39 +150,26 @@ def draw(results: dict, output: Path) -> None:
                markersize=6, label=label)
         for color, _, label in COMPONENT_STYLES.values()
     ]
-    fig.suptitle("Recorded outbreak activity and OCV requests",
-                 fontsize=16, weight="semibold", y=0.989)
-    fig.text(0.5, 0.957,
-             "Common 25-country reference SDs; whiskers are 95% asymptotic country-clustered CIs",
-             ha="center", fontsize=9.7, color="#536b7b")
     fig.legend(handles=handles, loc="upper center", ncol=2,
-               bbox_to_anchor=(0.5, 0.936), frameon=False,
+               bbox_to_anchor=(0.5, 0.997), frameon=False,
                handlelength=2.0, columnspacing=2.6)
-    fig.text(0.025, 0.678, "A  Reactive requests (primary)",
+    fig.text(0.055, 0.733, "Reactive requests",
              rotation=90, va="center", ha="center", fontsize=11.5,
              weight="semibold")
-    fig.text(0.025, 0.329, "B  All requests (secondary)",
+    fig.text(0.055, 0.283, "All requests",
              rotation=90, va="center", ha="center", fontsize=11.5,
              weight="semibold")
-    fig.supxlabel("Log-odds coefficient per 1 reference SD (full 25-country sample)", y=0.082,
+    fig.supxlabel("Log-odds coefficient per reference SD", y=0.026,
                  fontsize=10.5)
-    fig.text(0.13, 0.052,
-             "23 countries: excludes DR Congo and South Sudan. 22 countries: also excludes Nigeria.",
-             fontsize=8.8, color="#536b7b")
-    fig.text(0.13, 0.038,
-             "Reference SDs vary by window and component, but are fixed across all three samples and both outcomes (July 2014–December 2019).",
-             fontsize=8.5, color="#536b7b")
-    fig.text(0.13, 0.024,
-             "Wild-cluster-bootstrap p-values are reported separately; their significance thresholds may disagree with asymptotic CIs.",
-             fontsize=8.8, color="#536b7b")
-    fig.subplots_adjust(left=0.13, right=0.985, top=0.886,
-                        bottom=0.135, hspace=0.24, wspace=0.18)
+    fig.subplots_adjust(left=0.12, right=0.96, top=0.93,
+                        bottom=0.078, hspace=0.24, wspace=0.18)
     output.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(output, facecolor="white", dpi=300)
     plt.close(fig)
 
 
 def main() -> None:
+    """Read inputs, run this script and save its outputs."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--results", type=Path,

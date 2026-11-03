@@ -1,4 +1,5 @@
-"""Generate the delivery-round-position histogram (Figure S1) from source rows."""
+"""Draw the delivery-round-position histogram from retained source rows.
+Legacy reconciliation figure; not a current manuscript Figure S1."""
 from pathlib import Path
 
 import matplotlib
@@ -10,6 +11,7 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 def main():
+    """Read inputs, run this script and save its outputs."""
     source = pd.read_csv(ROOT / "data/source/deliveries.csv", keep_default_na=False)
     rounds = pd.to_numeric(source.round_number, errors="coerce").dropna()
     counts = rounds.astype(int).value_counts().sort_index()

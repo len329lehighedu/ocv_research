@@ -1,13 +1,7 @@
 #!/usr/bin/env python3
-"""Build the current country-month panel from Zheng outbreak intervals.
-
-Predictor: the number of *outbreak-months* in the preceding L months. An
-outbreak active in three preceding months contributes three, not one. This
-uses start/end dates, never the outbreak's eventual total case count.
-
-Requires pandas and numpy. The input outcome panel must contain the audited
-reactive_request indicator; this script never reclassifies requests.
-"""
+"""Count active outbreak records and build prior-month predictors.
+Manuscript: Methods 2.2-2.3; input to the main model and Figures 1-2.
+Each active record-month counts separately; Zanzibar maps to Tanzania."""
 
 from __future__ import annotations
 
@@ -34,6 +28,7 @@ LAST_MONTH = pd.Period("2019-12", freq="M")
 
 
 def build(outbreaks: pd.DataFrame, outcomes: pd.DataFrame) -> pd.DataFrame:
+    """Expand record intervals, sum preceding months and split logged activity into means and deviations."""
     required_outcomes = {"country", "yearmonth", "reactive_request", "request_this_month"}
     required_outbreaks = {"country", "start_date", "end_date"}
     for label, frame, required in (
@@ -90,6 +85,7 @@ def build(outbreaks: pd.DataFrame, outcomes: pd.DataFrame) -> pd.DataFrame:
         log_col = f"log1p_active_outbreak_months_{months_back}m"
         between_col = f"{log_col}_between"
         within_col = f"{log_col}_within"
+        # Shift first so the outcome month is excluded from every preceding window.
         history[count_col] = history.groupby("country", sort=False)[
             "active_outbreaks_this_month"
         ].transform(
@@ -120,6 +116,7 @@ def build(outbreaks: pd.DataFrame, outcomes: pd.DataFrame) -> pd.DataFrame:
         log_col = f"log1p_active_outbreak_months_{months_back}m"
         between_col = f"{log_col}_between"
         within_col = f"{log_col}_within"
+        # Means use the 66 estimation months, not all 78 months of source history.
         panel[between_col] = panel.groupby("country")[log_col].transform("mean")
         panel[within_col] = panel[log_col] - panel[between_col]
         if panel[[log_col, between_col, within_col]].isna().any().any():
@@ -130,6 +127,7 @@ def build(outbreaks: pd.DataFrame, outcomes: pd.DataFrame) -> pd.DataFrame:
 
 
 def main() -> None:
+    """Read inputs, run this script and save its outputs."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--outbreaks", required=True, type=Path)
     parser.add_argument("--outcomes", required=True, type=Path)

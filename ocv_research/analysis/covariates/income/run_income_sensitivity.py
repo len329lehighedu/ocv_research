@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
-"""Prespecified FY2015-income sensitivity; never edits the frozen analysis.
-
-Read method_protocol.md before use. Validation and benchmark reproduction must
-pass before any adjusted fit is reported. Outputs are a separate JSON record.
-"""
+"""Fit the model with FY2015 low-income status added separately.
+Manuscript: Methods 2.6.1; Results 3.5.1; Table S11 and Figure S2."""
 
 from __future__ import annotations
 
@@ -37,7 +34,7 @@ SEEDS = {BETWEEN: 20261128, WITHIN: 20261129}
 
 
 def frozen_bootstrap_function():
-    """Load the exact frozen implementation without copying its algorithm."""
+    """Load the retained bootstrap function used by the main model."""
     spec = importlib.util.spec_from_file_location("frozen_wclr_c", BOOTSTRAP)
     if spec is None or spec.loader is None:
         raise RuntimeError("Cannot load frozen WCLR-C implementation")
@@ -47,16 +44,12 @@ def frozen_bootstrap_function():
 
 
 def sha256(path: Path) -> str:
+    """Return the file SHA-256 used to detect input changes."""
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def validate_direct_interval_formula(panel: pd.DataFrame) -> dict:
-    """Independently count record×month intersections, not a rolling transform.
-
-    For record i and month m, its prior-year contribution is
-    max(0, min(end_i,m-1) - max(start_i,m-12) + 1), in integer month units.
-    This catches a current-month leak, endpoint error, and Zanzibar omission.
-    """
+    """Check prior-12-month counts directly from inclusive source intervals."""
     lookup = pd.read_csv(INCOME_LOOKUP)
     assert len(lookup) == 25 and lookup.country_panel.nunique() == 25
     assert set(lookup.country_panel) == set(panel.country)
@@ -85,6 +78,7 @@ def validate_direct_interval_formula(panel: pd.DataFrame) -> dict:
 
 
 def fit(data: pd.DataFrame, terms: list[str]):
+    """Fit logistic regression with country-clustered asymptotic covariance."""
     X = sm.add_constant(data[terms], has_constant="add")
     result = sm.GLM(data["reactive_request"], X, family=sm.families.Binomial()).fit(
         cov_type="cluster",
@@ -94,6 +88,7 @@ def fit(data: pd.DataFrame, terms: list[str]):
 
 
 def validate(panel: pd.DataFrame, source: pd.DataFrame) -> dict:
+    """Check the unchanged main panel and country-fixed income classification."""
     assert len(panel) == len(source) == 1650
     assert list(panel.columns[:len(source.columns)]) == list(source.columns)
     pd.testing.assert_frame_equal(panel[source.columns], source, check_dtype=False)
@@ -148,6 +143,7 @@ def validate(panel: pd.DataFrame, source: pd.DataFrame) -> dict:
 
 
 def validate_frozen_benchmark(panel: pd.DataFrame, results: pd.DataFrame) -> dict:
+    """Refit the primary model and compare coefficients and CIs with saved results."""
     X, fit0 = fit(panel, [BETWEEN, WITHIN])
     rows = results.loc[
         results.outcome.eq("reactive_request")
@@ -172,6 +168,7 @@ def validate_frozen_benchmark(panel: pd.DataFrame, results: pd.DataFrame) -> dic
 
 
 def coefficient_record(result, term: str) -> dict:
+    """Return the coefficient, odds ratio and asymptotic confidence intervals."""
     ci = result.conf_int(alpha=0.05).loc[term]
     beta = float(result.params[term])
     return {
@@ -183,6 +180,7 @@ def coefficient_record(result, term: str) -> dict:
 
 
 def run(reps: int) -> dict:
+    """Validate inputs, fit the specified models and collect their results."""
     panel = pd.read_csv(PANEL)
     source = pd.read_csv(SOURCE_PANEL)
     frozen = pd.read_csv(SOURCE_RESULTS)
@@ -248,6 +246,7 @@ def run(reps: int) -> dict:
 
 
 def main() -> None:
+    """Read inputs, run this script and save its outputs."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--reps", type=int, default=99999)
     parser.add_argument("--output", type=Path, default=HERE / "income_sensitivity_results.json")

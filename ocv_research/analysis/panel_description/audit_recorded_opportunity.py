@@ -1,10 +1,7 @@
 #!/usr/bin/env python3
-"""Read-only audit of recorded outbreak opportunity in the frozen panel.
-
-This is descriptive. It does not fit a model, alter an outcome, or interpret
-Zheng records as a complete census of cholera episodes. Each source row is a
-record, and each inclusive calendar-month overlap is one record-month.
-"""
+"""Check recorded activity and summarize the panel by country.
+Manuscript: Methods 2.2; Results 3.1; Table S1.
+This describes source records, not a complete census of outbreaks."""
 
 from __future__ import annotations
 
@@ -27,6 +24,7 @@ HISTORY_START = START - 12
 
 
 def audit() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+    """Recount source interval overlaps and summarize country-level recorded activity."""
     panel = pd.read_csv(PANEL)
     outcomes = pd.read_csv(OUTCOMES)
     records = pd.read_csv(SOURCE)

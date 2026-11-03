@@ -1,18 +1,7 @@
 #!/usr/bin/env python3
-"""Re-estimate the country-month models with recorded active outbreak-months.
-
-The primary predictor for month t is log1p of the sum of the number of
-outbreaks active in months t-12 through t-1. Country means and deviations are
-calculated over the common July 2014--December 2019 estimation sample.
-
-This script reports asymptotic country-clustered CIs and seeded WCLR-C
-Rademacher p-values for the main and robustness models. The WCLR-C procedure
-must be reconciled with the manuscript's original bootstrap implementation
-before its p-values replace the manuscript's reported values.
-
-The pending-dose secondary analysis is not included because its original
-global-pending predictor has not been reconstructed and verified.
-"""
+"""Fit the main and robustness logistic models with seeded bootstrap tests.
+Manuscript: Methods 2.3 and 2.5; Results 3.2-3.3; Table 1, Table S8, Figure 2.
+Confidence intervals are asymptotic; bootstrap p-values are separate."""
 
 from __future__ import annotations
 
@@ -36,6 +25,7 @@ OUTCOMES = ("reactive_request", "request_this_month")
 
 
 def validate(panel: pd.DataFrame) -> None:
+    """Check required inputs and retained analytical definitions."""
     required = {"country", "yearmonth", "reactive_request", "request_this_month"}
     for window in WINDOWS:
         stem = f"log1p_active_outbreak_months_{window}m"
@@ -63,6 +53,7 @@ def validate(panel: pd.DataFrame) -> None:
 
 
 def fit_one(data: pd.DataFrame, outcome: str, terms: list[str]):
+    """Fit the selected outcome and predictors with country-clustered covariance."""
     X = sm.add_constant(data[terms], has_constant="add")
     fit = sm.GLM(data[outcome], X, family=sm.families.Binomial()).fit(
         cov_type="cluster",
@@ -72,6 +63,7 @@ def fit_one(data: pd.DataFrame, outcome: str, terms: list[str]):
 
 
 def primary_and_robustness(panel: pd.DataFrame, reps: int, seed: int) -> pd.DataFrame:
+    """Fit every specified sample, outcome and window using fixed bootstrap seed rules."""
     rows = []
     for sample_index, (n_countries, excluded) in enumerate(SAMPLES.items()):
         sample = panel.loc[~panel.country.isin(excluded)].copy()
@@ -124,6 +116,7 @@ def primary_and_robustness(panel: pd.DataFrame, reps: int, seed: int) -> pd.Data
 
 
 def main() -> None:
+    """Read inputs, run this script and save its outputs."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--panel", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path, required=True)

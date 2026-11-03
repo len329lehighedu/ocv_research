@@ -1,11 +1,7 @@
 #!/usr/bin/env python3
-"""Write the Section 3.1 and Figure 1/2 tables from the saved raw sources.
-
-The comparison column reproduces values quoted in the current manuscript
-from Maffioli and Lu (2025); those published values are not recomputed from
-their unavailable request-level data. Every reconstructed value is calculated
-from the inputs supplied to this script.
-"""
+"""Create descriptive comparison and delivery-timing tables.
+Manuscript: Results 3.1; Tables S2-S4; removed dose comparison kept as legacy.
+Published comparator values are transcribed, not re-estimated."""
 
 from __future__ import annotations
 
@@ -18,6 +14,7 @@ from research_pipeline.data.build_active_outbreak_panel import COUNTRY_NAMES
 
 
 def table(title: str, headers: tuple[str, ...], rows: list[tuple[object, ...]]) -> str:
+    """Format supplied headers and rows as a Markdown table."""
     lines = [f"# {title}", "", "| " + " | ".join(headers) + " |",
              "| " + " | ".join("---" for _ in headers) + " |"]
     lines.extend("| " + " | ".join(str(value) for value in row) + " |" for row in rows)
@@ -26,6 +23,7 @@ def table(title: str, headers: tuple[str, ...], rows: list[tuple[object, ...]]) 
 
 def write_tables(outbreaks: pd.DataFrame, requests: pd.DataFrame,
                  deliveries: pd.DataFrame, panel: pd.DataFrame, output_dir: Path) -> None:
+    """Calculate source summaries and place them beside transcribed comparator values."""
     output_dir.mkdir(parents=True, exist_ok=True)
 
     starts = pd.to_datetime(outbreaks.start_date, errors="raise")
@@ -48,6 +46,7 @@ def write_tables(outbreaks: pd.DataFrame, requests: pd.DataFrame,
         raise ValueError("Expected 18 countries with a dated request")
 
     def mean(name: str) -> float:
+        """Calculate the mean of available numeric values in one outbreak field."""
         return float(pd.to_numeric(source[name], errors="coerce").mean())
 
     outbreak_rows = [
@@ -63,7 +62,7 @@ def write_tables(outbreaks: pd.DataFrame, requests: pd.DataFrame,
         ("Confirmed cases/outbreak", f"{mean('total_confirmed_cases'):.1f}", "36.4"),
         ("Deaths/outbreak", f"{mean('total_deaths'):.2f}", "4.81"),
         ("Duration (weeks)", f"{mean('duration'):.1f}", "12.9"),
-        ("Threshold (cases/week)", f"{mean('threshold'):.1f}", "10.1"),
+        ("Outbreak threshold (cases per 100,000 people per week)", f"{mean('threshold'):.1f}", "10.1"),
         ("Attack rate (/1,000)", f"{mean('attack_rate'):.2f}", "5.24"),
         ("CFR (%)", f"{mean('cfr'):.2f}", "1.85"),
         ("Mean R0", f"{mean('mean_R0'):.2f}", "1.90"),
@@ -116,13 +115,16 @@ def write_tables(outbreaks: pd.DataFrame, requests: pd.DataFrame,
     )
 
     figure_1_rows = [
-        ("Decision → first delivery", "Request with a valid date", len(first), f"{first.days.mean():.1f} days"),
-        ("Decision → last delivery", "Request with a valid date", len(last), f"{last.days.mean():.1f} days"),
-        ("Decision → all delivery rounds", "Round with a valid date", len(valid), f"{valid.days.mean():.1f} days"),
+        ("Decision → first delivery", "Request with a recorded interval", len(first), f"{first.days.mean():.1f} days"),
+        ("Decision → last delivery", "Request with a recorded interval", len(last), f"{last.days.mean():.1f} days"),
+        ("Decision → all delivery rounds", "Round with a recorded interval", len(valid), f"{valid.days.mean():.1f} days"),
     ]
     (output_dir / "figure_1_delivery_timing.md").write_text(
         table("Figure 1: delivery timing decomposition",
-              ("Indicator", "Unit", "Observations", "Result"), figure_1_rows),
+              ("Indicator", "Unit", "Observations", "Result"), figure_1_rows)
+        + "\nThese summaries use recorded numeric intervals, not reconstructed delivery dates. "
+        "Three negative intervals (-7, -1, -1 days) are retained as recorded. "
+        "See docs/reproduction.md for source exceptions; no dates are imputed.\n",
         encoding="utf-8",
     )
 
@@ -146,6 +148,7 @@ def write_tables(outbreaks: pd.DataFrame, requests: pd.DataFrame,
 
 
 def main() -> None:
+    """Read inputs, run this script and save its outputs."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--outbreaks", type=Path, required=True)
     parser.add_argument("--requests", type=Path, required=True)

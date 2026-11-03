@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
-"""Two prespecified IHME 2013 expenditure sensitivities; frozen files stay read-only.
-
-Read method_protocol.md first. All source, panel, and benchmark gates run before
-either adjusted model is reported. The two expenditure measures are never joint.
-"""
+"""Fit separate models with 2013 government or total health expenditure.
+Manuscript: Methods 2.6.1; Results 3.5.1; Table S11 and Figure S2.
+Both expenditure measures are log1p-transformed; they are not added jointly."""
 
 from __future__ import annotations
 
@@ -43,10 +41,12 @@ SEEDS = {BETWEEN: 20261128, WITHIN: 20261129}
 
 
 def sha256(path: Path) -> str:
+    """Return the file SHA-256 used to detect input changes."""
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def load_frozen_bootstrap():
+    """Load the retained bootstrap function used by the main model."""
     spec = importlib.util.spec_from_file_location("frozen_wclr_c", BOOTSTRAP)
     if spec is None or spec.loader is None:
         raise RuntimeError("Cannot load the frozen WCLR-C implementation")
@@ -56,7 +56,7 @@ def load_frozen_bootstrap():
 
 
 def validate_ihme_releases() -> dict:
-    """Check all released cells against DTA, then exact 25-country 2013 support."""
+    """Compare retained CSV and Stata values and check the 25-country 2013 subset."""
     csv = pd.read_csv(SOURCE_CSV)
     dta = pd.read_stata(SOURCE_DTA)
     assert csv.shape == dta.shape == (4554, 84)
@@ -112,7 +112,7 @@ def validate_ihme_releases() -> dict:
 
 
 def validate_direct_interval_formula(panel: pd.DataFrame) -> dict:
-    """Independently count overlap of each outbreak interval with [m-12,m-1]."""
+    """Check prior-12-month counts directly from inclusive source intervals."""
     crosswalk = pd.read_csv(COUNTRY_CROSSWALK)
     name_by_code = dict(zip(crosswalk.iso3, crosswalk.country_panel))
     name_by_code["TZA_zanzibar"] = "Tanzania"
@@ -135,6 +135,7 @@ def validate_direct_interval_formula(panel: pd.DataFrame) -> dict:
 
 
 def fit(data: pd.DataFrame, terms: list[str]):
+    """Fit logistic regression with country-clustered asymptotic covariance."""
     X = sm.add_constant(data[terms], has_constant="add")
     result = sm.GLM(data.reactive_request, X, family=sm.families.Binomial()).fit(
         cov_type="cluster", cov_kwds={"groups": data.country, "use_correction": False}
@@ -143,6 +144,7 @@ def fit(data: pd.DataFrame, terms: list[str]):
 
 
 def validate_frozen_benchmark(panel: pd.DataFrame) -> dict:
+    """Refit the primary model and compare coefficients and CIs with saved results."""
     frozen = pd.read_csv(SOURCE_RESULTS)
     _, reference = fit(panel, [BETWEEN, WITHIN])
     rows = frozen.loc[
@@ -168,6 +170,7 @@ def validate_frozen_benchmark(panel: pd.DataFrame) -> dict:
 
 
 def validate_panel(panel: pd.DataFrame, source: pd.DataFrame, lookup: pd.DataFrame) -> dict:
+    """Check country-month keys, outcomes and predictor values before fitting."""
     assert len(panel) == len(source) == 1650
     assert list(panel.columns[:len(source.columns)]) == list(source.columns)
     pd.testing.assert_frame_equal(panel[source.columns], source, check_dtype=False)
@@ -223,6 +226,7 @@ def validate_panel(panel: pd.DataFrame, source: pd.DataFrame, lookup: pd.DataFra
 
 
 def coefficient_record(result, term: str) -> dict:
+    """Return the coefficient, odds ratio and asymptotic confidence intervals."""
     ci = result.conf_int(alpha=0.05).loc[term]
     beta = float(result.params[term])
     return {
@@ -234,6 +238,7 @@ def coefficient_record(result, term: str) -> dict:
 
 
 def fit_sensitivity(panel: pd.DataFrame, term: str, reps: int, bootstrap) -> dict:
+    """Fit one expenditure adjustment and check its country influence and bootstrap tests."""
     terms = [BETWEEN, WITHIN, term]
     country = panel.groupby("country", sort=True).first()
     correlation = float(country[BETWEEN].corr(country[term]))
@@ -287,6 +292,7 @@ def fit_sensitivity(panel: pd.DataFrame, term: str, reps: int, bootstrap) -> dic
 
 
 def run(reps: int) -> dict:
+    """Validate inputs, fit the specified models and collect their results."""
     source_check = validate_ihme_releases()
     panel = pd.read_csv(PANEL)
     source_panel = pd.read_csv(SOURCE_PANEL)
@@ -299,7 +305,7 @@ def run(reps: int) -> dict:
     total = fit_sensitivity(panel, TOTAL_LOG, reps, bootstrap)
     return {
         "status": "optional_ihme_expenditure_sensitivities_not_frozen_main",
-        "specification_protocol": "method_protocol.md",
+        "specification_protocol": "docs/reproduction.md#baseline-covariates (package root)",
         "n_countries": 25,
         "n_country_months": len(panel),
         "n_reactive_event_months": int(panel.reactive_request.sum()),
@@ -323,6 +329,7 @@ def run(reps: int) -> dict:
 
 
 def main() -> None:
+    """Read inputs, run this script and save its outputs."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--reps", type=int, default=99999)
     parser.add_argument("--output", type=Path, default=HERE / "ihme_expenditure_sensitivity_results.json")

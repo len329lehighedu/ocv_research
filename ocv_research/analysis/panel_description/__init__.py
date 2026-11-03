@@ -1,1 +1,1 @@
-"""Exploratory outbreak-opportunity sensitivity."""
+"""Country-level descriptions of recorded outbreak activity."""

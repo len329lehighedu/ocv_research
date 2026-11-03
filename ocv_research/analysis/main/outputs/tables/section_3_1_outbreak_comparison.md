@@ -12,7 +12,7 @@
 | Confirmed cases/outbreak | 36.4 | 36.4 |
 | Deaths/outbreak | 4.81 | 4.81 |
 | Duration (weeks) | 12.9 | 12.9 |
-| Threshold (cases/week) | 10.1 | 10.1 |
+| Outbreak threshold (cases per 100,000 people per week) | 10.1 | 10.1 |
 | Attack rate (/1,000) | 5.24 | 5.24 |
 | CFR (%) | 1.85 | 1.85 |
 | Mean R0 | 1.90 | 1.90 |

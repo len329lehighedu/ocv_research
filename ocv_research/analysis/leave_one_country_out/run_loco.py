@@ -1,10 +1,7 @@
 #!/usr/bin/env python3
-"""Primary reactive-request model: baseline plus all 25 country omissions.
-
-Coefficients are per unit of the logged predictor, not per SD. CIs use the
-same asymptotic country-clustered sandwich (use_correction=False) as the
-frozen main model. No bootstrap tests or random draws are performed here.
-"""
+"""Refit the primary model after omitting each country once.
+Manuscript: Methods 2.5; Results 3.4; Table S10 and Figure S1.
+Keep raw log-odds units and asymptotic clustered CIs; no bootstrap is run."""
 
 from pathlib import Path
 import argparse
@@ -34,16 +31,19 @@ COUNTRIES = (
 
 
 def sha256(path):
+    """Return the file SHA-256 used to detect input changes."""
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
 def require(condition, message):
     # Unlike Python's assert, this check is not disabled by python -O.
+    """Stop with a clear error if a required check fails."""
     if not condition:
         raise ValueError(message)
 
 
 def validate_panel(panel):
+    """Check country-month keys, outcomes and predictor values before fitting."""
     require(set(panel.country.unique()) == set(COUNTRIES), "Unexpected country roster")
     require(len(panel) == 1650, "Expected 1,650 rows")
     require(not panel.duplicated(["country", "yearmonth"]).any(), "Duplicate keys")
@@ -62,6 +62,7 @@ def validate_panel(panel):
 
 
 def fit_model(data):
+    """Fit the primary model and reject nonfinite or nonconverged estimates."""
     design = sm.add_constant(data[TERMS], has_constant="add")
     require(np.linalg.matrix_rank(design.to_numpy()) == 3, "Rank-deficient design")
     with warnings.catch_warnings(record=True) as caught:
@@ -82,6 +83,7 @@ def fit_model(data):
 
 
 def coefficient_rows(data, fit, omitted, baseline, messages):
+    """Collect both coefficients, CIs and their changes from the full sample."""
     ci = fit.conf_int(alpha=0.05)
     rows = []
     for component, term in zip(("between", "within"), TERMS):
@@ -109,6 +111,7 @@ def coefficient_rows(data, fit, omitted, baseline, messages):
 
 
 def run(panel, frozen_results, output):
+    """Validate inputs, fit the specified models and collect their results."""
     validate_panel(panel)
     baseline, messages = fit_model(panel)
     reference = frozen_results.loc[
@@ -178,6 +181,7 @@ def run(panel, frozen_results, output):
 
 
 def main():
+    """Read inputs, run this script and save its outputs."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output-dir", type=Path, default=HERE / "outputs")
     args = parser.parse_args()

@@ -1,4 +1,5 @@
-"""Collect manuscript-numbered tables/figures without changing any fitted model."""
+"""Collect current manuscript tables and figures only.
+Manuscript: Table 1, Tables S1-S12, Figures 1, 2, S1 and S2."""
 from pathlib import Path
 import json
 import shutil
@@ -13,6 +14,7 @@ from analysis.panel_description.audit_recorded_opportunity import audit
 
 
 def main():
+    """Read inputs, run this script and save its outputs."""
     dest = ROOT / "manuscript_outputs"
     tables, figures = dest / "tables", dest / "figures"
     tables.mkdir(parents=True, exist_ok=True)
@@ -31,29 +33,39 @@ def main():
     country_table.insert(1, "country_months", 66)
     assert country_table.active_record_months_panel.sum() == 1883
     assert country_table.reactive_request_months.sum() == 58
-    country_table.to_csv(tables / "table_s1_country_composition.csv", index=False)
+    country_table['reactive_request_months_percent_of_country_months'] = 100 * country_table.reactive_request_months / country_table.country_months
+    country_table['active_record_months_percent_of_total'] = 100 * country_table.active_record_months_panel / country_table.active_record_months_panel.sum()
+    total = {"country": "Total", "country_months": int(country_table.country_months.sum()),
+             "reactive_request_months": int(country_table.reactive_request_months.sum()),
+             "active_record_months_panel": int(country_table.active_record_months_panel.sum())}
+    total['reactive_request_months_percent_of_country_months'] = 100 * total['reactive_request_months'] / total['country_months']
+    total['active_record_months_percent_of_total'] = 100.0
+    pd.concat([country_table, pd.DataFrame([total])], ignore_index=True).to_csv(
+        tables / "table_s1_country_composition.csv", index=False, float_format="%.17g")
     # Published comparator values are transcribed inputs, not estimates of this study.
     markdown_tables = {
         "section_3_1_outbreak_comparison.md": ("s2", "Outbreak-source descriptive comparison"),
         "section_3_1_request_comparison.md": ("s3", "Request and delivery descriptive comparison"),
         "figure_1_delivery_timing.md": ("s4", "Decision-to-delivery timing"),
-        "figure_2_dose_comparison.md": ("s5", "Dose-total arithmetic comparison"),
     }
     for filename, (number, title) in markdown_tables.items():
         text = (saved / "tables" / filename).read_text()
         text = f"# Table {number.upper()}. {title}\n" + text[text.index("\n"):]
         (tables / f"table_{number}_{filename}").write_text(text)
     csv_tables = {
-        "supplement_s1_request_classification.csv": "table_s6_request_classification.csv",
-        "supplement_s2_dose_reconciliation.csv": "table_s7_dose_reconciliation.csv",
-        "supplement_s3_nonstandard_requests.csv": "table_s8_nonstandard_requests.csv",
-        "table_s4_pvalues.csv": "table_s10_robustness.csv",
-        "table_s5_any_active_months.csv": "table_s11_any_active_months.csv",
+        "supplement_s1_request_classification.csv": "table_s5_request_classification.csv",
+        "supplement_s3_nonstandard_requests.csv": "table_s6_nonstandard_requests.csv",
+        "table_s4_pvalues.csv": "table_s8_robustness.csv",
+        "table_s5_any_active_months.csv": "table_s9_any_active_months.csv",
     }
     for source, target in csv_tables.items():
         shutil.copy2(saved / "tables" / source, tables / target)
     audit_dir = ROOT / "analysis/request_month_audit/outputs"
-    shutil.copy2(audit_dir / "supplementary_audit_22.csv", tables / "table_s9_external_documentation_audit.csv")
+    audit_rows = pd.read_csv(audit_dir / "supplementary_audit_22.csv", keep_default_na=False)
+    compact = audit_rows[["audit_id", "country", "yearmonth", "prior_window_start", "prior_window_end",
+                          "evidence_category", "external_finding", "request_linkage",
+                          "remaining_uncertainty", "sources_numbered", "source_ids", "source_urls"]]
+    compact.to_csv(tables / "table_s7_external_documentation_audit.csv", index=False)
     loco = pd.read_csv(ROOT / "analysis/leave_one_country_out/outputs/loco_coefficients.csv")
     wide = []
     for country, group in loco.groupby("omitted_country", sort=False):
@@ -62,7 +74,7 @@ def main():
             for field in ("coefficient_log_odds", "ci95_low_asymptotic", "ci95_high_asymptotic"):
                 row[f"{item.component}_{field}"] = getattr(item, field)
         wide.append(row)
-    pd.DataFrame(wide).to_csv(tables / "table_s12_leave_one_country_out.csv", index=False, float_format="%.17g")
+    pd.DataFrame(wide).to_csv(tables / "table_s10_leave_one_country_out.csv", index=False, float_format="%.17g")
     from analysis.figures.plot_covariate_sensitivity import load_estimates
     covariates, _, _ = load_estimates()
     income = json.loads((ROOT / "analysis/covariates/income/income_sensitivity_results.json").read_text())
@@ -87,22 +99,20 @@ def main():
                    added_covariate_ci95_low=None if cov is None else cov["ci95_log_odds_cluster_asymptotic"][0],
                    added_covariate_ci95_high=None if cov is None else cov["ci95_log_odds_cluster_asymptotic"][1])
         sensitivity.append(row)
-    pd.DataFrame(sensitivity).to_csv(tables / "table_s13_covariate_sensitivities.csv", index=False, float_format="%.17g")
+    pd.DataFrame(sensitivity).to_csv(tables / "table_s11_covariate_sensitivities.csv", index=False, float_format="%.17g")
     shutil.copy2(ROOT / "analysis/time_sensitivities/outputs/comparison_results.csv",
-                 tables / "table_s14_temporal_sensitivities.csv")
+                 tables / "table_s12_temporal_sensitivities.csv")
     shutil.copy2(ROOT / "analysis/between_within_contrast/outputs/contrast_results.csv",
                  tables / "between_within_contrast.csv")
     for source, target in {
-        "analysis/main/outputs/figures/panel_a.png": "figure_1a_between.png",
-        "analysis/main/outputs/figures/panel_b.png": "figure_1b_within.png",
+        "analysis/main/outputs/figures/figure_1.png": "figure_1.png",
+        "analysis/main/outputs/figures/figure_1.pdf": "figure_1.pdf",
         "analysis/main/outputs/figures/robustness_coefficient_plot_sample_layout.png": "figure_2_robustness.png",
-        "analysis/figures/delivery_rounds/delivery_round_positions.png": "figure_s1_delivery_rounds.png",
-        "analysis/figures/reconciliation_outputs/figure2_reconciliation_revised.png": "figure_s2_dose_reconciliation.png",
-        "analysis/leave_one_country_out/outputs/loco_coefficients.png": "figure_s3_leave_one_country_out.png",
-        "analysis/figures/covariate_sensitivity/covariate_sensitivity_coefficient_plot.png": "figure_s4_covariates.png",
+        "analysis/leave_one_country_out/outputs/loco_coefficients.png": "figure_s1_leave_one_country_out.png",
+        "analysis/figures/covariate_sensitivity/covariate_sensitivity_coefficient_plot.png": "figure_s2_covariates.png",
     }.items():
         shutil.copy2(ROOT / source, figures / target)
-    print("Exported Table 1, Tables S1–S14, contrast data, and seven figure files.")
+    print("Exported Table 1, Tables S1–S12, contrast data and four numbered figures; Figure 1 also has a vector PDF.")
 
 
 if __name__ == "__main__":

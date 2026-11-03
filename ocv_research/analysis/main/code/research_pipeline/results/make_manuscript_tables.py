@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Create paste-ready manuscript tables from the locked seeded model outputs."""
+"""Format saved main, robustness and alternative-predictor estimates.
+Manuscript: Table 1, Tables S8-S9; final numbering is applied by the exporter."""
 
 from __future__ import annotations
 
@@ -10,14 +11,17 @@ import pandas as pd
 
 
 def ci(row: pd.Series) -> str:
+    """Format the saved asymptotic interval to three decimal places."""
     return f"[{row.ci95_low_asymptotic:.3f}, {row.ci95_high_asymptotic:.3f}]"
 
 
 def pvalue(value: float, *, precision: int = 3) -> str:
+    """Format a p-value without changing its saved numeric value."""
     return "<0.001" if value < 0.001 else f"{value:.{precision}f}"
 
 
 def make_tables(main: pd.DataFrame, alternative: pd.DataFrame, output_dir: Path) -> None:
+    """Check the expected estimates and write the formatted intermediate tables."""
     expected = {
         (outcome, countries, lag, component)
         for outcome in ("reactive_request", "request_this_month")
@@ -96,6 +100,7 @@ def make_tables(main: pd.DataFrame, alternative: pd.DataFrame, output_dir: Path)
 
 
 def main_cli() -> None:
+    """Read command-line paths and write the formatted tables."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--results", required=True, type=Path)
     parser.add_argument("--alternative", required=True, type=Path)

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Run the manuscript analyses without the separate development/test suite."""
+"""Run the complete data, analysis and plotting workflow.
+Manuscript: Methods 2.1-2.6; Results 3.1-3.5; all current tables and figures."""
 import os
 from pathlib import Path
 import subprocess
@@ -10,15 +11,19 @@ ROOT = Path(__file__).resolve().parent
 
 
 def invoke(*arguments, cwd=ROOT):
+    """Run a Python workflow step and stop if it fails."""
     print('\n>>> ' + ' '.join(str(x) for x in arguments), flush=True)
     subprocess.run([sys.executable, '-B', *map(str, arguments)], cwd=cwd, check=True)
 
 
 def main():
+    """Read inputs, run this script and save its outputs."""
     os.environ.setdefault('MPLCONFIGDIR', str(Path(tempfile.gettempdir()) / 'ocv-zenodo-mpl'))
     os.environ['PYTHONDONTWRITEBYTECODE'] = '1'
+    # Build the main panel first; later analyses use this same panel and its saved estimates.
     invoke('-m', 'research_pipeline.run_current', '--reps', 99999, '--seed', 20261007,
            cwd=ROOT / 'analysis/main/code')
+    # Run supplementary analyses before collecting the manuscript-numbered outputs.
     for script in (
         'analysis/covariates/build_panels.py',
         'analysis/covariates/income/run_income_sensitivity.py',
@@ -30,6 +35,7 @@ def main():
         'analysis/time_sensitivities/run_sensitivities.py',
         'analysis/request_month_audit/build_roster.py',
         'analysis/request_month_audit/compile_audit.py',
+        'analysis/delivery_provenance.py',
         'analysis/figures/plot_delivery_rounds.py',
         'analysis/figures/plot_figure2_reconciliation.py',
         'analysis/figures/plot_covariate_sensitivity.py',

@@ -1,9 +1,6 @@
-"""Reconstruct covariate panels without proprietary spreadsheet dependencies.
-
-Income and campaign-history country files are documented, human-coded inputs.
-IHME values are additionally checked against the supplied original CSV.
-Existing derived panels are verified, never silently replaced.
-"""
+"""Join the retained country-level covariates to the main panel.
+Manuscript: Methods 2.6.1; inputs to Table S11 and Figure S2.
+Check existing panels rather than silently replacing different values."""
 from pathlib import Path
 import json
 import numpy as np
@@ -14,6 +11,7 @@ ROOT=HERE.parents[1]
 MAIN=ROOT/'analysis/main/outputs/analysis_data/active_outbreak_panel.csv'
 
 def check_or_write(frame,path):
+    """Check an existing panel or save it when no panel exists."""
     if path.exists():
         old=pd.read_csv(path,keep_default_na=False)
         assert list(old.columns)==list(frame.columns),(path,'column mismatch')
@@ -27,7 +25,9 @@ def check_or_write(frame,path):
     print('Reconstructed and checked:',path.relative_to(ROOT))
 
 def main():
+    """Read inputs, run this script and save its outputs."""
     p=pd.read_csv(MAIN)
+    # Append country-fixed covariates without changing any original panel column.
     assert len(p)==1650 and p.country.nunique()==25 and p.reactive_request.sum()==58
     income=pd.read_csv(HERE/'income/country_income_fy2015.csv',keep_default_na=False)
     assert len(income)==25 and income.country_panel.is_unique

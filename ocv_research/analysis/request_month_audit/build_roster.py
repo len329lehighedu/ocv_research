@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Freeze the 22-month audit universe from the canonical panel and sources."""
+"""Identify the 22 reactive request-months with zero preceding activity.
+Manuscript: Methods 2.4; Results 3.1; Table S7."""
 from pathlib import Path
 import hashlib
 import json
@@ -20,13 +21,16 @@ COUNTRY = dict(zip(
 COUNTRY["TZA_zanzibar"] = "Tanzania"
 
 def sha(path):
+    """Return the file SHA-256 used to detect input changes."""
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 def require(condition, message):
+    """Stop with a clear error if a required check fails."""
     if not condition:
         raise ValueError(message)
 
 def main():
+    """Read inputs, run this script and save its outputs."""
     inputs, outputs = HERE / "inputs", HERE / "outputs"
     inputs.mkdir(exist_ok=True); outputs.mkdir(exist_ok=True)
     paths = [ROOT / "data/source/requests.csv", ROOT / "data/source/zheng_outbreak_records.csv",

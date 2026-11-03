@@ -1,10 +1,7 @@
 #!/usr/bin/env python3
-"""Reviewer-requested two-sided test of beta_between == beta_within.
-
-The original main specification is frozen. Reparameterizing its linear
-predictor permits reuse of the unchanged restricted WCLR-C helper.
-No primary data, main results or campaign labels are modified.
-"""
+"""Test whether the between- and within-country coefficients are equal.
+Manuscript: Methods 2.3; Results 3.2 and Abstract.
+The equivalent model tests their difference without changing the primary model."""
 from pathlib import Path
 import argparse
 import hashlib
@@ -31,16 +28,20 @@ COUNTRIES = {'Angola','Benin','Burundi','Cameroon','Chad','DR Congo','Ethiopia',
  'Tanzania','Uganda','Zambia','Zimbabwe'}
 
 def require(ok, message):
+    """Stop with a clear error if a required check fails."""
     if not ok:
         raise ValueError(message)
 
 def sha(path):
+    """Return the file SHA-256 used to detect input changes."""
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 def close(a,b,tol=1e-8):
+    """Check numerical agreement within the stated absolute tolerance."""
     np.testing.assert_allclose(a,b,atol=tol,rtol=0)
 
 def prepare():
+    """Check retained panel, model and bootstrap snapshots against their canonical files."""
     folder=HERE/'inputs'; folder.mkdir(exist_ok=True)
     paths={
       'active_outbreak_panel.csv':ROOT/'analysis/main/outputs/analysis_data/active_outbreak_panel.csv',
@@ -67,6 +68,7 @@ def prepare():
     return record
 
 def panel_checks(p):
+    """Check the frozen panel before testing the coefficient difference."""
     require(set(p.country)==COUNTRIES,'Incorrect country roster')
     require(len(p)==1650 and not p.duplicated(['country','yearmonth']).any(),'Panel keys/size wrong')
     months=set(pd.period_range('2014-07','2019-12',freq='M').astype(str))
@@ -78,6 +80,7 @@ def panel_checks(p):
     close(p[BETWEEN],p.groupby('country')[STEM].transform('mean'),1e-9)
 
 def fit_glm(y,design,groups):
+    """Fit the model and check rank, convergence, warnings and finite covariance."""
     require(np.linalg.matrix_rank(design)==design.shape[1],'Rank-deficient design')
     with warnings.catch_warnings(record=True) as caught:
         warnings.simplefilter('always')
@@ -94,6 +97,7 @@ def fit_glm(y,design,groups):
 
 def cluster_arrays(X,y,prob,groups):
     # Separate implementation for verification, not the production helper.
+    """Independently calculate country scores and information matrices."""
     score=[]; info=[]
     for country in sorted(set(groups)):
         take=groups==country
@@ -103,11 +107,7 @@ def cluster_arrays(X,y,prob,groups):
     return np.array(score),np.array(info)
 
 def direct_contrast_bootstrap(X,y,groups,unrestricted_prob,restricted_prob,c,reps,seed):
-    """Independent original-parameterization contrast with imposed equality.
-
-    c=[0,1,-1]; restricted probabilities come from alpha + beta*X_logged.
-    Uses scalar draws/solves to cross-check the vectorized production helper.
-    """
+    """Cross-check the difference test with the original model parameterization."""
     G=len(set(groups)); n,k=X.shape
     factor=G*(n-1)/((G-1)*(n-k))
     us,uj=cluster_arrays(X,y,unrestricted_prob,groups)
@@ -129,6 +129,7 @@ def direct_contrast_bootstrap(X,y,groups,unrestricted_prob,restricted_prob,c,rep
     return np.array(tstar),v
 
 def main():
+    """Read inputs, run this script and save its outputs."""
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--reps',type=int,default=99999)
     parser.add_argument('--seed',type=int,default=20261007)

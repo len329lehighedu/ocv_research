@@ -1,0 +1,5 @@
+source_csv_line,Country,request_id,round_number,doses_delivered,days_since_decision,Note,unmatched_request_id,negative_recorded_interval
+9,Cameroon,2019-I03-D02,1,691200,unknown,-355 DAYS SINCE REQUEST ACCEPTED,True,False
+84,South Sudan,2015-I05-D01,1,67130,-7,,False,True
+123,Zimbabwe,2018-I11-D01,1,500000,-1,,False,True
+124,,2018-I11-D01,2,881700,-1,,False,True

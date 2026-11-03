@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
-"""Rebuild the manuscript's request classification and dose reconciliation.
-
-Writes row-level data for Supplement Tables S1–S3 from the preserved request
-CSV. A missing numeric approval is not interpreted as zero doses delivered.
-"""
+"""Classify requests and reconcile requested and approved doses.
+Manuscript: Results 3.1; Tables S5-S6; dose reconciliation kept as legacy.
+A missing numeric approval is not evidence of zero deliveries."""
 
 from __future__ import annotations
 
@@ -33,6 +31,7 @@ DETAIL_LABELS = {
 
 
 def classify(source: pd.DataFrame) -> pd.DataFrame:
+    """Assign request categories using recorded dates, quantities and decision labels."""
     requests = source.copy()
     requests["parsed_date"] = pd.to_datetime(
         requests.request_date, format="%m/%d/%Y", errors="coerce"
@@ -70,6 +69,7 @@ def classify(source: pd.DataFrame) -> pd.DataFrame:
 
 
 def make_tables(requests: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+    """Produce category totals, dose arithmetic and nonstandard request records."""
     s1 = requests.groupby("category", observed=True).agg(
         requests=("country", "size"),
         requested_doses=("requested", "sum"),
@@ -137,6 +137,7 @@ def make_tables(requests: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame, pd.
 
 
 def main() -> None:
+    """Read inputs, run this script and save its outputs."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--requests", required=True, type=Path)
     parser.add_argument("--output-dir", required=True, type=Path)

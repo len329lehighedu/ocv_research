@@ -1,10 +1,7 @@
 #!/usr/bin/env python3
-"""Rebuild and fit the supplementary 12-month any-active-outbreak measure.
-
-The measure is log1p of the number of preceding calendar months with at least
-one recorded active outbreak. It uses the same outcomes, sample window, model,
-and seeded WCLR-C procedure as revise_active_outbreak_results.py.
-"""
+"""Count prior months with any active record and fit alternative models.
+Manuscript: Methods 2.6.2; Results 3.3; Table S9.
+A month counts once, even when several outbreak records are active."""
 
 from __future__ import annotations
 
@@ -23,6 +20,7 @@ ROOT = Path(__file__).resolve().parents[3]
 
 
 def build_predictor(outbreaks: pd.DataFrame, primary_panel: pd.DataFrame) -> pd.DataFrame:
+    """Count prior calendar months with any activity, then log-transform and decompose."""
     validate(primary_panel)
     countries = sorted(primary_panel.country.unique())
     months = pd.period_range(FIRST_MONTH, LAST_MONTH, freq="M")
@@ -82,6 +80,7 @@ def build_predictor(outbreaks: pd.DataFrame, primary_panel: pd.DataFrame) -> pd.
 
 
 def estimate(panel: pd.DataFrame, reps: int, seed: int) -> pd.DataFrame:
+    """Fit the alternative predictor for each retained outcome and country sample."""
     stem = "log1p_any_active_months_12m"
     terms = [f"{stem}_between", f"{stem}_within"]
     rows = []
@@ -121,6 +120,7 @@ def estimate(panel: pd.DataFrame, reps: int, seed: int) -> pd.DataFrame:
 
 
 def main() -> None:
+    """Read inputs, run this script and save its outputs."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--outbreaks", type=Path,
                         default=ROOT / "fundamental_data" / "zheng_outbreak_records.csv")

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""One-command local reproduction using this folder's prepared inputs."""
+"""Run the country-omission models and draw their coefficient plot.
+Manuscript: Results 3.4; Table S10 and Figure S1."""
 
 from pathlib import Path
 import subprocess
@@ -10,6 +11,7 @@ HERE = Path(__file__).resolve().parent
 
 
 def main():
+    """Read inputs, run this script and save its outputs."""
     for script in ("run_loco.py", "plot_loco.py"):
         print(f"\nRunning {script}", flush=True)
         subprocess.run([sys.executable, "-B", str(HERE / script)], check=True)

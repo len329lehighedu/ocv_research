@@ -1,4 +1,6 @@
-"""Seeded restricted WCLR-C Rademacher bootstrap for the current models."""
+"""Calculate restricted WCLR-C bootstrap p-values with country-level signs.
+Manuscript: Methods 2.3; main, robustness, contrast and sensitivity tests.
+CV1 studentization is used here, not for the asymptotic confidence intervals."""
 
 from __future__ import annotations
 
@@ -7,6 +9,7 @@ import statsmodels.api as sm
 
 
 def _cluster_scores_and_information(X, y, probabilities, groups):
+    """Calculate each country score and information matrix."""
     unique = np.unique(groups)
     scores, information = [], []
     for group in unique:
@@ -18,10 +21,11 @@ def _cluster_scores_and_information(X, y, probabilities, groups):
 
 
 def wclr_c_pvalue(X, y, groups, fit, term_index, reps, seed):
-    """Restricted WCLR-C test; returns (p, observed CV1 t-statistic)."""
+    """Return the two-sided restricted bootstrap p-value and observed CV1 t."""
     n, k = X.shape
     G = len(np.unique(groups))
     factor = G * (n - 1) / ((G - 1) * (n - k))
+    # Use CV1 only for the observed and bootstrap t-statistics in this test.
     unrestricted_scores, unrestricted_Jg = _cluster_scores_and_information(
         X, y, np.asarray(fit.fittedvalues), groups)
     J_hat_inv = np.linalg.inv(unrestricted_Jg.sum(axis=0))
@@ -31,6 +35,7 @@ def wclr_c_pvalue(X, y, groups, fit, term_index, reps, seed):
         return np.nan, observed_t
 
     nuisance = [i for i in range(k) if i != term_index]
+    # Impose a zero coefficient for the tested term; retain the other predictors.
     restricted_fit = sm.GLM(y, X[:, nuisance], family=sm.families.Binomial()).fit()
     restricted_probabilities = np.asarray(restricted_fit.fittedvalues)
     scores, Jg = _cluster_scores_and_information(X, y, restricted_probabilities, groups)
@@ -40,6 +45,7 @@ def wclr_c_pvalue(X, y, groups, fit, term_index, reps, seed):
     completed = 0
     while completed < reps:
         batch = min(4096, reps - completed)
+        # One random -1/+1 sign per country keeps observations within that country together.
         signs = rng.choice(np.array([-1.0, 1.0]), size=(batch, G))
         scores_star = signs[:, :, None] * scores[None, :, :]
         b_star = scores_star.sum(axis=1) @ J_inv.T
@@ -53,4 +59,5 @@ def wclr_c_pvalue(X, y, groups, fit, term_index, reps, seed):
         t_star = b_star[:, term_index] / se_star
         exceed += int(np.count_nonzero(np.abs(t_star) >= abs(observed_t)))
         completed += batch
+    # The plus-one rule avoids reporting an exactly zero simulated p-value.
     return (exceed + 1) / (reps + 1), observed_t

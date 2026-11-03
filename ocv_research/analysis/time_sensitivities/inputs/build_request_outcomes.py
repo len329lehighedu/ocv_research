@@ -1,11 +1,7 @@
 #!/usr/bin/env python3
-"""Rebuild audited binary country-month outcomes from the request-level CSV.
-
-The primary outcome counts only requests explicitly labelled Reactive. A
-request with a missing campaign-type label counts toward the all-request
-outcome but not the reactive outcome. Multiple requests in one country-month
-still produce one event-month.
-"""
+"""Build binary monthly outcomes for all requests and reactive requests.
+Manuscript: Methods 2.2.2; input to every country-month model.
+Only an explicit Reactive label counts toward the primary outcome."""
 
 from __future__ import annotations
 
@@ -20,6 +16,7 @@ LAST_MONTH = "2019-12"
 
 
 def build(requests: pd.DataFrame) -> pd.DataFrame:
+    """Code all-request and explicitly reactive outcomes for each country-month."""
     required = {"country", "request_id", "request_date", "campaign_type"}
     missing = required - set(requests.columns)
     if missing:
@@ -44,9 +41,11 @@ def build(requests: pd.DataFrame) -> pd.DataFrame:
         raise ValueError("Duplicate request IDs in estimation period")
 
     months = pd.period_range(FIRST_MONTH, LAST_MONTH, freq="M").astype(str)
+    # Keep countries and months with no request rather than selecting only events.
     panel = pd.MultiIndex.from_product(
         [countries, months], names=["country", "yearmonth"]
     ).to_frame(index=False)
+    # Missing labels count for all requests, but never imply a reactive request.
     dated["is_reactive"] = dated.campaign_type.eq("Reactive").astype(int)
     grouped = dated.groupby(["country", "yearmonth"], as_index=False).agg(
         n_requests_this_month=("request_id", "size"),
@@ -63,6 +62,7 @@ def build(requests: pd.DataFrame) -> pd.DataFrame:
 
 
 def main() -> None:
+    """Read inputs, run this script and save its outputs."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--requests", required=True, type=Path)
     parser.add_argument("--output", required=True, type=Path)

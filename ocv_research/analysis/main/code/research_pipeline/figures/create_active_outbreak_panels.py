@@ -1,11 +1,7 @@
 #!/usr/bin/env python3
-"""Draw Figure 3A/B for the recorded active outbreak-months predictor.
-
-Panel A shows 25 country means, with display-only offsets for coincident
-circles. Panel B uses six tied-preserving negative quantile groups, one group
-for exactly zero within-country deviation, and three tied-preserving positive
-quantile groups. These are ordered groups, not ten equal-sized deciles.
-"""
+"""Draw Figure 1, with country means in A and monthly deviations in B.
+Manuscript: Results 3.2; output is one combined PNG/PDF plus separate panels.
+Panel B shows a transformed outcome, not observed request probabilities."""
 
 from __future__ import annotations
 
@@ -22,22 +18,38 @@ import numpy as np
 import pandas as pd
 
 
-FIGSIZE = (9.0, 5.9)
+FIGSIZE = (7.2, 4.4)
 DPI = 300
-MARGINS = dict(left=0.125, right=0.87, bottom=0.325, top=0.83)
+MARGINS = dict(left=0.15, right=0.855, bottom=0.23, top=0.91)
 Y_LIM = (-0.55, 16.0)
 Y_TICKS = (0, 4, 8, 12, 16)
-BLUE = "#245f86"
-ORANGE = "#cf5c35"
-BASELINE = "#73808a"
-GRID = "#e2e7eb"
-NOTE = "#526777"
-LEADER = "#693c87"
+BLUE = "#3b6f94"
+ORANGE = "#c75b35"
+BASELINE = "#7b8389"
+GRID = "#e9e9e9"
+LEADER = "#94a1aa"
 STEM = "log1p_active_outbreak_months_12m"
+STYLE = {
+    "font.family": "Arial",
+    "font.size": 9,
+    "axes.labelsize": 9.5,
+    "axes.labelcolor": "#303030",
+    "axes.edgecolor": "#303030",
+    "axes.linewidth": 0.8,
+    "xtick.labelsize": 9,
+    "ytick.labelsize": 9,
+    "xtick.color": "#303030",
+    "ytick.color": "#303030",
+    "xtick.major.width": 0.8,
+    "ytick.major.width": 0.8,
+    "xtick.major.size": 3,
+    "ytick.major.size": 3,
+    "pdf.fonttype": 42,
+}
 
 
 def separate_x(values: np.ndarray, gap: float) -> np.ndarray:
-    """Order-preserving least-squares offsets with minimum visual spacing."""
+    """Separate coincident circles horizontally while preserving their order."""
     blocks: list[list[float | int]] = []
     for value in values - np.arange(len(values)) * gap:
         blocks.append([float(value), 1])
@@ -54,26 +66,33 @@ def separate_x(values: np.ndarray, gap: float) -> np.ndarray:
     return centers + np.arange(len(values)) * gap
 
 
-def base_figure(title: str):
-    fig, ax = plt.subplots(figsize=FIGSIZE, dpi=DPI)
-    fig.subplots_adjust(**MARGINS)
+def base_figure(panel_letter: str, fig_ax=None):
+    """Set common axis styling and add the panel letter."""
+    plt.rcParams.update(STYLE)
+    if fig_ax is None:
+        fig, ax = plt.subplots(figsize=FIGSIZE, dpi=DPI)
+        fig.subplots_adjust(**MARGINS)
+    else:
+        fig, ax = fig_ax
     ax.set_ylim(*Y_LIM)
     ax.set_yticks(Y_TICKS)
-    ax.tick_params(axis="both", labelsize=10)
     ax.set_axisbelow(True)
-    ax.grid(axis="y", color=GRID, linewidth=0.7)
+    ax.grid(axis="y", color=GRID, linewidth=0.45)
     ax.spines["top"].set_visible(False)
-    ax.set_title(title, loc="left", fontweight="bold", fontsize=15, pad=31)
-    fig.text(
-        MARGINS["left"], 0.855,
-        "25 countries; 1,650 country-months; 58 reactive event-months",
-        fontsize=10, color=NOTE, zorder=20,
-        bbox={"facecolor": "white", "edgecolor": "none", "pad": 0.25},
-    )
+    ax.text(0, 1.04, panel_letter, transform=ax.transAxes,
+            fontweight="bold", fontsize=12, ha="left", va="bottom")
     return fig, ax
 
 
-def draw_a(data: pd.DataFrame, figure_dir: Path, data_dir: Path):
+def save_panel(fig, figure_dir: Path, name: str):
+    """Save matching PNG and vector PDF artwork, then close the figure."""
+    fig.savefig(figure_dir / f"{name}.png", facecolor="white", dpi=DPI)
+    fig.savefig(figure_dir / f"{name}.pdf", facecolor="white")
+    plt.close(fig)
+
+
+def draw_a(data: pd.DataFrame, figure_dir: Path, data_dir: Path, *, fig_ax=None):
+    """Plot country means and request shares; fit the original, unshifted x-values."""
     summary = data.groupby("country", as_index=False).agg(
         mean_log1p_active_outbreak_months_12m=(STEM, "mean"),
         reactive_event_months=("reactive_request", "sum"),
@@ -86,25 +105,26 @@ def draw_a(data: pd.DataFrame, figure_dir: Path, data_dir: Path):
     assert summary.observed_months.eq(66).all()
     x = summary.mean_log1p_active_outbreak_months_12m.to_numpy()
     y = summary.reactive_request_month_share_pct.to_numpy()
+    # Fit before moving coincident circles; offsets affect display only.
     slope, intercept = np.polyfit(x, y, 1)
 
-    fig, ax = base_figure("A  Between-country differences")
+    fig, ax = base_figure("A", fig_ax)
     ax.set_xlim(-0.12, 4.35)
     ax.set_xticks(np.arange(0, 4.1, 1))
     ax.set_xlabel(
-        "Country mean of ln(1 + active outbreak-months in preceding 12 months)",
-        fontsize=11, labelpad=10,
+        "Country mean of logged outbreak activity",
+        labelpad=14,
     )
-    ax.set_ylabel("Months with ≥1 reactive OCV request (% per country)", fontsize=11, labelpad=10)
+    ax.set_ylabel("Months with ≥1 reactive request (% per country)", labelpad=12)
     right = ax.secondary_yaxis(
         "right", functions=(lambda pct: pct * 66 / 100, lambda months: months * 100 / 66)
     )
-    right.set_ylabel("Months with ≥1 reactive OCV request (of 66)", fontsize=11, labelpad=12)
+    right.set_ylabel("Months with ≥1 reactive request", labelpad=12)
     right.set_yticks(np.arange(0, 11))
-    right.tick_params(labelsize=10)
+    right.tick_params(labelsize=9)
 
     fig.canvas.draw()
-    marker_area, edge_width = 40, 1.3
+    marker_area, edge_width = 30, 0.9
     marker_diameter = (np.sqrt(marker_area) + edge_width) * DPI / 72
     gap_pixels = (np.sqrt(marker_area) + edge_width + 3) * DPI / 72
     gap_data = gap_pixels * np.diff(ax.get_xlim())[0] / ax.bbox.width
@@ -122,29 +142,22 @@ def draw_a(data: pd.DataFrame, figure_dir: Path, data_dir: Path):
         ax.plot(
             [row.mean_log1p_active_outbreak_months_12m, row.display_x],
             [row.reactive_request_month_share_pct] * 2,
-            color=LEADER, linewidth=2.1, linestyle=(0, (2.0, 1.1)), zorder=3,
+            color=LEADER, linewidth=0.7, linestyle=(0, (2.0, 1.1)), zorder=3,
         )
         ax.scatter(
             [row.mean_log1p_active_outbreak_months_12m],
-            [row.reactive_request_month_share_pct], marker="|", s=38,
-            color=LEADER, linewidths=1.6, zorder=3,
+            [row.reactive_request_month_share_pct], marker="|", s=22,
+            color=LEADER, linewidths=0.7, zorder=3,
         )
     grid = np.linspace(x.min(), x.max(), 300)
-    ax.plot(grid, intercept + slope * grid, color=ORANGE, linewidth=1.8,
-            label="Descriptive fit (original x values)", zorder=2)
+    ax.plot(grid, intercept + slope * grid, color=ORANGE, linewidth=1.35,
+            label="Descriptive fit", zorder=2)
     overall = 100 * data.reactive_request.mean()
-    ax.axhline(overall, color=BASELINE, linewidth=1, linestyle="--",
-               label=f"Overall rate: {overall:.2f}% (58/1,650)", zorder=1)
+    ax.axhline(overall, color=BASELINE, linewidth=0.9, linestyle=(0, (4, 3)),
+               label="Overall mean", zorder=1)
     ax.scatter(summary.display_x, y, s=marker_area, facecolors="white",
                edgecolors=BLUE, linewidths=edge_width, zorder=4)
-    ax.legend(frameon=False, loc="upper left", fontsize=9)
-    fig.text(
-        MARGINS["left"], 0.092,
-        "Each circle represents one country. Small horizontal offsets separate overlapping circles;\n"
-        "y values and the fit use original x. Each country contributes 66 months.\n"
-        "Lines are descriptive; model-based inference is reported in the main text.",
-        fontsize=8.4, color=NOTE, linespacing=1.35,
-    )
+    ax.legend(frameon=False, loc="upper left", fontsize=8.5, handlelength=2.4)
     fig.canvas.draw()
     pixels = ax.transData.transform(
         summary[["display_x", "reactive_request_month_share_pct"]].to_numpy()
@@ -156,13 +169,14 @@ def draw_a(data: pd.DataFrame, figure_dir: Path, data_dir: Path):
     summary["descriptive_fit_pct_at_original_x"] = intercept + slope * x
     summary["leader_drawn"] = moved
     bounds = tuple(float(v) for v in ax.bbox.bounds)
-    fig.savefig(figure_dir / "panel_a.png", facecolor="white")
-    plt.close(fig)
-    summary.to_csv(data_dir / "panel_a_data.csv", index=False, float_format="%.12g")
+    if fig_ax is None:
+        save_panel(fig, figure_dir, "panel_a")
+        summary.to_csv(data_dir / "panel_a_data.csv", index=False, float_format="%.12g")
     return summary, bounds, (float(slope), float(intercept))
 
 
 def make_groups(data: pd.DataFrame) -> pd.DataFrame:
+    """Keep ties together in six negative, one exact-zero and three positive groups."""
     grouped = data.copy()
     deviation = grouped[f"{STEM}_within"]
     negative = deviation.lt(0)
@@ -183,10 +197,12 @@ def make_groups(data: pd.DataFrame) -> pd.DataFrame:
     return grouped
 
 
-def draw_b(data: pd.DataFrame, figure_dir: Path, data_dir: Path):
+def draw_b(data: pd.DataFrame, figure_dir: Path, data_dir: Path, *, fig_ax=None):
+    """Plot country-adjusted group means and a group-size-weighted descriptive fit."""
     grouped = make_groups(data)
     overall = float(grouped.reactive_request.mean())
     grouped["country_request_mean"] = grouped.groupby("country").reactive_request.transform("mean")
+    # Remove each country's average and add the panel-wide rate back for display.
     grouped["adjusted_outcome_pct"] = 100 * (
         grouped.reactive_request - grouped.country_request_mean + overall
     )
@@ -204,6 +220,7 @@ def draw_b(data: pd.DataFrame, figure_dir: Path, data_dir: Path):
     ranks = summary.ordered_group.to_numpy()
     rates = summary.adjusted_rate_pct.to_numpy()
     counts = summary.n_country_months.to_numpy()
+    # polyfit squares its weights, so sqrt(n) gives each group a total weight of n.
     slope, intercept = np.polyfit(ranks, rates, 1, w=np.sqrt(counts))
     summary["weighted_fit_pct"] = intercept + slope * ranks
     weighted_rate = float(np.average(rates, weights=counts))
@@ -219,40 +236,54 @@ def draw_b(data: pd.DataFrame, figure_dir: Path, data_dir: Path):
                       100 * overall, atol=1e-10):
         raise ValueError("Exactly-zero group should equal the overall rate")
 
-    fig, ax = base_figure("B  Within-country deviations")
+    fig, ax = base_figure("B", fig_ax)
     ax.set_xlim(0.5, 10.5)
     ax.set_xticks(ranks, [f"{int(rank)}\nn={int(size)}" for rank, size in zip(ranks, counts)])
+    ax.tick_params(axis="x", labelsize=8)
     ax.set_xlabel(
-        "Ordered group of within-country deviation in ln(1 + 12-month active outbreak-months)",
-        fontsize=11, labelpad=10,
+        "Ordered group of within-country deviation", labelpad=14,
     )
-    ax.set_ylabel("Country-adjusted request outcome (×100)",
-                  fontsize=11, labelpad=10)
-    ax.scatter(ranks, rates, s=40, color=BLUE, edgecolor="white", linewidth=0.6, zorder=4)
-    ax.plot(ranks, summary.weighted_fit_pct, color=ORANGE, linewidth=1.8,
-            label="Descriptive fit (weighted by group size)", zorder=3)
-    ax.axhline(100 * overall, color=BASELINE, linewidth=1, linestyle="--",
-               label=f"Overall rate: {100 * overall:.2f}% (58/1,650)", zorder=1)
+    ax.set_ylabel("Country-adjusted outcome (×100)",
+                  labelpad=12)
+    ax.scatter(ranks, rates, s=30, color=BLUE, edgecolor="white", linewidth=0.5, zorder=4)
+    ax.plot(ranks, summary.weighted_fit_pct, color=ORANGE, linewidth=1.35,
+            label="Weighted descriptive fit", zorder=3)
+    ax.axhline(100 * overall, color=BASELINE, linewidth=0.9, linestyle=(0, (4, 3)),
+               label="Overall mean", zorder=1)
     ax.spines["right"].set_visible(False)
-    ax.legend(frameon=False, loc="upper left", fontsize=9)
-    fig.text(
-        MARGINS["left"], 0.092,
-        "Adjusted outcome = 100 × (monthly indicator − country mean + overall mean).\n"
-        "Six negative quantile groups, an exact-zero group (7), then three positive quantile groups; ties stay together.\n"
-        "Group 7 contains 264 months from four countries and equals the overall rate by construction.\n"
-        "Adjusted rates need not equal raw proportions. Lines are descriptive; model-based inference is in the text.",
-        fontsize=7.8, color=NOTE, linespacing=1.28,
-    )
+    ax.legend(frameon=False, loc="upper left", fontsize=8.5, handlelength=2.4)
     fig.canvas.draw()
     bounds = tuple(float(v) for v in ax.bbox.bounds)
-    fig.savefig(figure_dir / "panel_b.png", facecolor="white")
-    plt.close(fig)
-    summary.to_csv(data_dir / "panel_b_data.csv", index=False, float_format="%.12g")
-    grouped.to_csv(data_dir / "panel_b_month_data.csv", index=False, float_format="%.12g")
+    if fig_ax is None:
+        save_panel(fig, figure_dir, "panel_b")
+        summary.to_csv(data_dir / "panel_b_data.csv", index=False, float_format="%.12g")
+        grouped.to_csv(data_dir / "panel_b_month_data.csv", index=False, float_format="%.12g")
     return summary, bounds, (float(slope), float(intercept)), weighted_rate
 
 
+def draw_combined(data: pd.DataFrame, figure_dir: Path, data_dir: Path):
+    """Place A above B at the same physical scale as the separate panels."""
+    plt.rcParams.update(STYLE)
+    fig = plt.figure(figsize=(FIGSIZE[0], 2 * FIGSIZE[1]), dpi=DPI)
+    axes = [
+        fig.add_axes([
+            MARGINS["left"], (offset + MARGINS["bottom"]) / 2,
+            MARGINS["right"] - MARGINS["left"],
+            (MARGINS["top"] - MARGINS["bottom"]) / 2,
+        ])
+        for offset in (1, 0)
+    ]
+    _, a_bounds, _ = draw_a(data, figure_dir, data_dir, fig_ax=(fig, axes[0]))
+    _, b_bounds, _, _ = draw_b(data, figure_dir, data_dir, fig_ax=(fig, axes[1]))
+    # Vertical positions differ; left edges and plotting dimensions must match.
+    if not np.allclose(np.array(a_bounds)[[0, 2, 3]],
+                       np.array(b_bounds)[[0, 2, 3]], atol=1e-9, rtol=0):
+        raise ValueError("Combined panel plotting areas are not aligned")
+    save_panel(fig, figure_dir, "figure_1")
+
+
 def main() -> None:
+    """Read inputs, run this script and save its outputs."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--panel", type=Path, required=True)
     parser.add_argument("--figure-dir", type=Path, required=True)
@@ -278,12 +309,14 @@ def main() -> None:
     b, b_bounds, b_fit, weighted = draw_b(data, args.figure_dir, args.data_dir)
     if not np.allclose(a_bounds, b_bounds, atol=1e-9, rtol=0):
         raise ValueError("Panel plotting areas are not aligned")
+    draw_combined(data, args.figure_dir, args.data_dir)
     print(f"Panel A: {len(a)} circles; Σ reactive months={int(a.reactive_event_months.sum())}")
     print(f"Panel B: {len(b)} groups; Σn={int(b.n_country_months.sum())}; "
           f"Σ events={int(b.reactive_event_months.sum())}; weighted mean={weighted:.6f}%")
     print(f"Panel A descriptive fit: slope={a_fit[0]:.6f}, intercept={a_fit[1]:.6f}")
     print(f"Panel B descriptive fit: slope={b_fit[0]:.6f} pp/group, intercept={b_fit[1]:.6f}")
     print(f"Aligned plot bounds: {a_bounds}")
+    print(f"Saved combined Figure 1 (A above B): {args.figure_dir / 'figure_1.png'}")
 
 
 if __name__ == "__main__":

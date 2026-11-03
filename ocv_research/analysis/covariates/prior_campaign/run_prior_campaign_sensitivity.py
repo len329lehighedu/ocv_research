@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
-"""Optional, pre-protocolled baseline campaign-history sensitivity.
-
-Read method_protocol.md. Source, country, panel, interval and frozen-model
-validations are mandatory gates before the adjusted fit is reported.
-"""
+"""Fit the model with documented pre-July-2014 OCV campaign experience.
+Manuscript: Methods 2.6.1; Results 3.5.1; Table S11 and Figure S2.
+Seven countries are documented positives; zero means not documented."""
 
 from __future__ import annotations
 
@@ -40,10 +38,12 @@ SEEDS = {BETWEEN: 20261128, WITHIN: 20261129}
 
 
 def sha256(path: Path) -> str:
+    """Return the file SHA-256 used to detect input changes."""
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def load_frozen_bootstrap():
+    """Load the retained bootstrap function used by the main model."""
     spec = importlib.util.spec_from_file_location("frozen_wclr_c", BOOTSTRAP)
     if spec is None or spec.loader is None:
         raise RuntimeError("Cannot load frozen WCLR-C implementation")
@@ -53,6 +53,7 @@ def load_frozen_bootstrap():
 
 
 def validate_ledger(lookup: pd.DataFrame) -> dict:
+    """Check documented campaign dates, seven positive countries and the July 2014 cutoff."""
     ledger = json.loads(LEDGER.read_text())
     crosswalk = pd.read_csv(CROSSWALK)
     assert ledger["cutoff_exclusive"] == "2014-07-01"
@@ -100,6 +101,7 @@ def validate_ledger(lookup: pd.DataFrame) -> dict:
 
 
 def validate_direct_interval_formula(panel: pd.DataFrame, lookup: pd.DataFrame) -> dict:
+    """Check prior-12-month counts directly from inclusive source intervals."""
     name_by_code = dict(zip(lookup.iso3, lookup.country_panel))
     name_by_code["TZA_zanzibar"] = "Tanzania"
     records = pd.read_csv(SOURCE_OUTBREAKS, usecols=["country", "start_date", "end_date"])
@@ -121,6 +123,7 @@ def validate_direct_interval_formula(panel: pd.DataFrame, lookup: pd.DataFrame) 
 
 
 def fit(data: pd.DataFrame, terms: list[str]):
+    """Fit logistic regression with country-clustered asymptotic covariance."""
     X = sm.add_constant(data[terms], has_constant="add")
     result = sm.GLM(data.reactive_request, X, family=sm.families.Binomial()).fit(
         cov_type="cluster", cov_kwds={"groups": data.country, "use_correction": False}
@@ -129,6 +132,7 @@ def fit(data: pd.DataFrame, terms: list[str]):
 
 
 def validate_panel(panel: pd.DataFrame, source: pd.DataFrame, lookup: pd.DataFrame) -> dict:
+    """Check country-month keys, outcomes and predictor values before fitting."""
     assert len(panel) == len(source) == 1650
     assert list(panel.columns[:len(source.columns)]) == list(source.columns)
     pd.testing.assert_frame_equal(panel[source.columns], source, check_dtype=False)
@@ -187,6 +191,7 @@ def validate_panel(panel: pd.DataFrame, source: pd.DataFrame, lookup: pd.DataFra
 
 
 def validate_frozen_benchmark(panel: pd.DataFrame) -> dict:
+    """Refit the primary model and compare coefficients and CIs with saved results."""
     frozen = pd.read_csv(SOURCE_RESULTS)
     _, base = fit(panel, [BETWEEN, WITHIN])
     rows = frozen.loc[frozen.outcome.eq("reactive_request")
@@ -209,6 +214,7 @@ def validate_frozen_benchmark(panel: pd.DataFrame) -> dict:
 
 
 def coefficient_record(result, term: str) -> dict:
+    """Return the coefficient, odds ratio and asymptotic confidence intervals."""
     ci = result.conf_int(alpha=0.05).loc[term]
     beta = float(result.params[term])
     return {
@@ -220,6 +226,7 @@ def coefficient_record(result, term: str) -> dict:
 
 
 def run(reps: int) -> dict:
+    """Validate inputs, fit the specified models and collect their results."""
     lookup = pd.read_csv(LOOKUP)
     ledger_check = validate_ledger(lookup)
     panel = pd.read_csv(PANEL)
@@ -255,7 +262,7 @@ def run(reps: int) -> dict:
         })
     return {
         "status": "optional_documented_prior_ocv_campaign_sensitivity_not_frozen_main",
-        "specification_protocol": "method_protocol.md",
+        "specification_protocol": "docs/reproduction.md#baseline-covariates (package root)",
         "formula": "logit P(reactive_request_cm=1) = alpha + beta_B*between12_c + beta_W*within12_cm + gamma*documented_prior_campaign_pre2014jul_c",
         "n_countries": 25,
         "n_country_months": len(panel),
@@ -279,12 +286,13 @@ def run(reps: int) -> dict:
         "source_sha256": {str(path.relative_to(ROOT)): sha256(path) for path in (
             PANEL, LOOKUP, LEDGER, CROSSWALK, SOURCE_PANEL, SOURCE_RESULTS,
             SOURCE_OUTBREAKS, BOOTSTRAP,
-            Path(__file__), ROOT / "analysis/covariates/build_panels.py", HERE / "method_protocol.md",
+            Path(__file__), ROOT / "analysis/covariates/build_panels.py", ROOT / "docs/reproduction.md",
         )},
     }
 
 
 def main() -> None:
+    """Read inputs, run this script and save its outputs."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--reps", type=int, default=99999)
     parser.add_argument("--output", type=Path, default=HERE / "prior_campaign_sensitivity_results.json")

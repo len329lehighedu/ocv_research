@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
-"""Rebuild the frozen panel from unchanged fundamental data, without fitting.
-
-Run once from the existing research workspace. The prepared folder can then
-be copied elsewhere: run_loco.py needs only this folder's inputs/ directory.
-"""
+"""Rebuild and save the inputs needed for all country-omission models.
+Manuscript: Methods 2.5; Results 3.4; Table S10 and Figure S1."""
 
 from pathlib import Path
 import hashlib
@@ -21,10 +18,12 @@ FINAL = ROOT / "analysis/main"
 
 
 def sha256(path):
+    """Return the file SHA-256 used to detect input changes."""
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
 def load_builder(path, name):
+    """Load a retained panel builder from its file path."""
     spec = importlib.util.spec_from_file_location(name, path)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
@@ -32,6 +31,7 @@ def load_builder(path, name):
 
 
 def main():
+    """Read inputs, run this script and save its outputs."""
     inputs = HERE / "inputs"
     builders = HERE / "source_builders"
     inputs.mkdir(exist_ok=True)

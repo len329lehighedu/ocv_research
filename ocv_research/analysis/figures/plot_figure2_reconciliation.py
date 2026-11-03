@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
-"""Reproduce Figure 2 from the reconstructed OCV request records.
-
-The figure reconciles independently summed requested and approved dose totals.
-All arithmetic uses unrounded dose counts; only plotted labels use millions.
-"""
+"""Draw the requested-to-approved dose waterfall from unrounded counts.
+Legacy reconciliation figure; not the current manuscript Figure 2."""
 
 from __future__ import annotations
 
@@ -25,6 +22,7 @@ DEFAULT_CSV = ROOT / "analysis/figures/reconciliation_outputs" / "figure2_reconc
 
 
 def build_stages(source: pd.DataFrame) -> pd.DataFrame:
+    """Calculate the unrounded dose adjustments linking requested and approved totals."""
     req = source.copy()
     req["date"] = pd.to_datetime(req["request_date"], format="%m/%d/%Y", errors="coerce")
     req = req.loc[req["date"].notna()].copy()
@@ -65,6 +63,7 @@ def build_stages(source: pd.DataFrame) -> pd.DataFrame:
 
 
 def plot(stages: pd.DataFrame, out: Path) -> None:
+    """Draw the retained dose waterfall; display labels in millions."""
     blue, red, green = "#205878", "#c85a47", "#2c8568"
     gray, ink, muted = "#a8b2b9", "#263743", "#5f7180"
     labels = [
@@ -143,6 +142,7 @@ def plot(stages: pd.DataFrame, out: Path) -> None:
 
 
 def main() -> None:
+    """Read inputs, run this script and save its outputs."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--requests", type=Path, default=DEFAULT_REQUESTS)
     parser.add_argument("--png", type=Path, default=DEFAULT_PNG)

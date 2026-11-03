@@ -3,7 +3,7 @@
   "definition": "At least one documented mass oral cholera vaccine campaign with vaccine administered before the cutoff; any purpose or funding source",
   "zero_meaning": "No qualifying pre-cutoff campaign documented in the audited historical sources; not verified absence",
   "audit_revision": "2026-10-13: added documented November 2013 Kalemie administration; definition, outcome and frozen outbreak predictors unchanged",
-  "zero_country_audit": "zero_country_literature_audit_2026-10-13.md",
+  "zero_country_audit": "docs/reproduction.md#baseline-covariates (package root); zero means not documented, not verified absence",
   "inventory_sources": [
     "https://www.who.int/docs/default-source/documents/publications/use-of-oral-cholera-vaccine-in-humanitarian-emergencies.pdf",
     "https://cdn.who.int/media/docs/default-source/immunization/sage/2017/sage-meeting-of-april-2017/background-docs/session-use-of-oral-cholera-vaccines/ocv_background_document_sagewg_finalversion_editedps_.pdf",

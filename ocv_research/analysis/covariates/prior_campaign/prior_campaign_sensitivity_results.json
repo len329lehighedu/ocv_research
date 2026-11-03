@@ -1,6 +1,6 @@
 {
   "status": "optional_documented_prior_ocv_campaign_sensitivity_not_frozen_main",
-  "specification_protocol": "method_protocol.md",
+  "specification_protocol": "docs/reproduction.md#baseline-covariates (package root)",
   "formula": "logit P(reactive_request_cm=1) = alpha + beta_B*between12_c + beta_W*within12_cm + gamma*documented_prior_campaign_pre2014jul_c",
   "n_countries": 25,
   "n_country_months": 1650,
@@ -469,14 +469,14 @@
   "source_sha256": {
     "analysis/covariates/prior_campaign/active_outbreak_panel_prior_ocv_campaign.csv": "27fde358637336f985a42da62000f24d29c5444b9c17bf3e3b701ec43675eeef",
     "analysis/covariates/prior_campaign/country_prior_ocv_campaign_pre2014jul.csv": "0a33723528c54f648211f4b8257a414a6b25d7d863f281fbf45702b43055af1a",
-    "analysis/covariates/prior_campaign/source_ledger.json": "b0115f0947cf375f7ac043308aab9bcbe554de93b49a7d070041f79e06b430e3",
+    "analysis/covariates/prior_campaign/source_ledger.json": "c3d0df7e2723f00b20df4abf42e67d979d16c1ecdd9224e5bd5846cce26fed1a",
     "analysis/covariates/income/country_income_fy2015.csv": "54e426b075e166b0a36a29dde1a39e3d1ab18004cdc38d41c1e5f5fcbcbf15c8",
     "analysis/main/outputs/analysis_data/active_outbreak_panel.csv": "7a71ca386e5c653a31a321c28fb63ff299435600addfaf484ccd76dc4c5131c3",
     "analysis/main/outputs/analysis_data/active_outbreak_results_seeded.csv": "7564c3cbe087e190544d3dea0c25b5eea42a1d771438fd64b7a24e5b52e436bd",
     "data/source/zheng_outbreak_records.csv": "d9d29e188f53b53f27a934a47c40531da187f09b8dde8da46046745b6800fc34",
-    "analysis/main/code/research_pipeline/results/wild_cluster_bootstrap.py": "e61809dbd5c9ee0512fb1eff59f8b9f98e7872286a6b27019588ddfd47dd6bb5",
-    "analysis/covariates/prior_campaign/run_prior_campaign_sensitivity.py": "baab7175e8e1f1d1c128e209213cb8f914db3088c721334604e51549d365e717",
-    "analysis/covariates/build_panels.py": "1dd04173c2401b9afe2b83262dddca27b3ae69996646cab86fb0c8c1ca404386",
-    "analysis/covariates/prior_campaign/method_protocol.md": "7f2e49d8e98e8acec3d23e47e7b0cf5be1709cf73076f11a77e9416b323c1447"
+    "analysis/main/code/research_pipeline/results/wild_cluster_bootstrap.py": "52f33acc5492650e3ee0981e55d3b344808cb3bf0d8bb4f9d3d73dad3100ec4f",
+    "analysis/covariates/prior_campaign/run_prior_campaign_sensitivity.py": "c6e9fbf291ab9ab5a387443387e6913c8a9fd110110116f97fee173a3e2a772e",
+    "analysis/covariates/build_panels.py": "db82b54780336b5440289853d98a47bc171a31a3099d0ad04c9c44ba004570cc",
+    "docs/reproduction.md": "c8cb0dd252c325b0e563576f227e06fbdb0aeda9ed2a44394b0138ba1c0ea30a"
   }
 }

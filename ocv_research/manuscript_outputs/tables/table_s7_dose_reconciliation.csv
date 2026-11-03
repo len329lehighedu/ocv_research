@@ -1,8 +1,0 @@
-step,change_doses,running_total
-Requested doses,89088648,89088648
-Requests marked not approved,-16467152,72621496
-Cancelled requests,-2474806,70146690
-Requests with no logged decision,-10272002,59874688
-Unapproved portion of partially approved requests,-6642396,53232292
-Tanzania: approved quantity above requested quantity,90000,53322292
-Malawi: approved quantity with requested quantity missing,676000,53998292

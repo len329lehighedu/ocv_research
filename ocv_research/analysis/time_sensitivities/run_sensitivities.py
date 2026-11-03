@@ -1,10 +1,7 @@
 #!/usr/bin/env python3
-"""Two reviewer-requested sensitivities, keeping the frozen main model intact.
-
-History July 2013-December 2019; common estimation July 2014-December 2019.
-M1 adds year indicators to the original predictor. M2 shifts a twelve-month
-window from t-12..t-1 to t-11..t. These changes are NOT combined.
-"""
+"""Fit year-adjusted and outcome-month-inclusive sensitivity models separately.
+Manuscript: Methods 2.6.2; Results 3.5.2; Table S12.
+Compare t-12..t-1 with t-11..t; both windows contain exactly 12 months."""
 from pathlib import Path
 import argparse
 import hashlib
@@ -33,19 +30,25 @@ COUNTRIES={'Angola','Benin','Burundi','Cameroon','Chad','DR Congo','Ethiopia',
 YEARS=[f'year_{year}' for year in range(2015,2020)]
 
 def require(ok,message):
+    """Stop with a clear error if a required check fails."""
     if not ok: raise ValueError(message)
 
 def close(a,b,tol=1e-8):
+    """Check numerical agreement within the stated absolute tolerance."""
     np.testing.assert_allclose(a,b,rtol=0,atol=tol)
 
-def sha(path): return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+def sha(path):
+    """Return the file SHA-256 used to detect input changes."""
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 def module(path,name):
+    """Load a retained builder or bootstrap module from a local file."""
     spec=importlib.util.spec_from_file_location(name,path)
     m=importlib.util.module_from_spec(spec); spec.loader.exec_module(m)
     return m
 
 def prepare():
+    """Check retained source and code snapshots against their canonical files."""
     sources={
       'requests.csv':'data/source/requests.csv',
       'zheng_outbreak_records.csv':'data/source/zheng_outbreak_records.csv',
@@ -67,10 +70,11 @@ def prepare():
     return record
 
 def sum_overlap(start,end,lo,hi):
-    """Independent count of active record-months, not daily duration or unique outbreaks."""
+    """Count inclusive record-month intersections with the specified window."""
     return int(np.maximum(0,np.minimum(end,hi)-np.maximum(start,lo)+1).sum())
 
 def validate_panel(p):
+    """Check country-month keys, outcomes and predictor values before fitting."""
     require(set(p.country)==COUNTRIES and len(p)==1650,'Incorrect countries or rows')
     require(not p.duplicated(['country','yearmonth']).any(),'Duplicate keys')
     months=set(pd.period_range('2014-07','2019-12',freq='M').astype(str))
@@ -82,6 +86,7 @@ def validate_panel(p):
     close(p[B],p.groupby('country')[STEM].transform('mean'),1e-9)
 
 def build_panel(out):
+    """Rebuild both 12-month windows and add year indicators without changing outcomes."""
     inputs=HERE/'inputs'
     outcomes=module(inputs/'build_request_outcomes.py','locked_outcomes').build(
         pd.read_csv(inputs/'requests.csv',keep_default_na=False))
@@ -132,6 +137,7 @@ def build_panel(out):
     close(p[IB]+p[IW],p.inclusive_log1p_12m,1e-12)
     close(p.groupby('country')[IW].mean(),0,1e-12)
     p['year']=p.yearmonth.str[:4].astype(int)
+    # July-December 2014 is the reference year; each later year gets an indicator.
     for year in range(2015,2020): p[f'year_{year}']=(p.year==year).astype(float)
     require(p[YEARS].sum(axis=1).eq((p.year!=2014).astype(int)).all(),'Wrong reference-year coding')
     p.to_csv(out/'sensitivity_panel.csv',index=False,float_format='%.17g')
@@ -156,12 +162,7 @@ def build_panel(out):
         all_event_transition_counts=dict(zip(transitions.transition,transitions.event_months.astype(int))))
 
 def separation_check(X,y):
-    """Numerical LP feasibility test for complete or quasi-complete separation.
-
-    With signed rows Z, separation exists iff Z*b>=0 and sum(Z*b)>=1 is
-    feasible (homogeneous rescaling). A second LP distinguishes strict separation.
-    Neither near-zero probabilities nor a convergence flag is the criterion.
-    """
+    """Use linear programming to check complete or quasi-complete separation."""
     X=np.asarray(X,float); y=np.asarray(y,float)
     scale=np.maximum(np.max(np.abs(X),axis=0),1.)
     z=(2*y-1)[:,None]*(X/scale)
@@ -178,6 +179,7 @@ def separation_check(X,y):
     return dict(status='complete separation' if strict.status==0 else 'quasi-complete separation',lp_status=int(res.status))
 
 def fit_checked(y,design,groups,label,tol=1e-12):
+    """Fit logistic regression and independently check convergence and clustered covariance."""
     X=design.to_numpy(float)
     require(np.isfinite(X).all() and np.linalg.matrix_rank(X)==X.shape[1],'Invalid design: '+label)
     sep=separation_check(X,y)
@@ -217,7 +219,7 @@ def fit_checked(y,design,groups,label,tol=1e-12):
     return fit,diagnostic
 
 def verify_bootstrap(X,y,groups,fit,restricted,term,reps,seed):
-    """Separate full-draw computation using solves and explicit cluster residuals."""
+    """Cross-check every bootstrap draw with a separate score calculation."""
     prob=np.asarray(restricted.fittedvalues); unique=sorted(set(groups)); n,k=X.shape; G=len(unique)
     S=[]; Jg=[]
     for g in unique:
@@ -245,6 +247,7 @@ def verify_bootstrap(X,y,groups,fit,restricted,term,reps,seed):
         minimum_bootstrap_se=minimum,observed_t_cv1=observed,all_draws_finite=True)
 
 def run_models(p,out,reps,base_seed):
+    """Fit the main, year-adjusted and inclusive-window models separately."""
     locked=pd.read_csv(HERE/'inputs/active_outbreak_results_seeded.csv')
     reference=locked.loc[(locked.outcome=='reactive_request')&(locked.lookback_months==12)&(locked.countries==25)].set_index('component')
     require(len(reference)==2 and reference.index.is_unique,'Ambiguous main reference')
@@ -313,6 +316,7 @@ def run_models(p,out,reps,base_seed):
     return pd.DataFrame(rows)
 
 def make_report(results,construction,out):
+    """Write estimates, window definitions and interpretation limits to a readable report."""
     lines=['# Calendar-year and request-month-inclusive sensitivities','',
      'History: July 2013-December 2019. Common estimation period: July 2014-December 2019. '
      'All specifications contain 25 countries, 1,650 observations and 58 reactive request-months. '
@@ -356,6 +360,7 @@ def make_report(results,construction,out):
     (out/'RESULTS.md').write_text('\n'.join(lines)+'\n')
 
 def main():
+    """Read inputs, run this script and save its outputs."""
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--reps',type=int,default=99999)
     parser.add_argument('--base-seed',type=int,default=20261007)

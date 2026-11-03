@@ -1,11 +1,9 @@
-"""Human-curated public-source evidence, not inferred case labels or model inputs.
-
-All source summaries below are analyst paraphrases, not direct quotations.
-Only epidemiological dates/places and administrative histories are extracted.
-Date bounds at month precision are NOT exact onset dates.
-"""
+"""Store the human-reviewed sources, dated passages and case assessments.
+Manuscript: Methods 2.4; Results 3.1; Table S7.
+Summaries are paraphrases; month-level bounds are not exact onset dates."""
 
 def source(sid, title, issuer, date, url, locator, support, access="read", limitation="", accessed_on="2026-10-17"):
+    """Store a source citation, passage summary, access status and limitations."""
     return dict(source_id=sid, title=title, issuer=issuer, publication_date=date,
                 url=url, passage_locator=locator, supporting_summary=support,
                 access_status=access, accessed_on=accessed_on, limitation=limitation)
@@ -56,11 +54,11 @@ SOURCES = [
  "Background paragraph on the last outbreak",
  "Describes the previous outbreak as ending in February 2018.",
  limitation="Timing differs from a March 2018 WHO bulletin listing cholera in Mozambique. Do not silently select one chronology."),
- source("S10", "Outbreaks and Emergencies Bulletin, Week 13: 24-30 March 2018", "WHO AFRO", "2018-03",
+ source("S10", "Outbreaks and Emergencies Bulletin, Week 13: 24-30 March 2018", "WHO AFRO", "2018-04 (publication month; reporting period 24-30 March 2018)",
  "https://www.afro.who.int/publications/outbreaks-and-emergencies-bulletin-week-13-24-30-march-2018",
- "Mozambique page, Event description; author-supplied screenshot and matching transcription read on 18 October 2026",
- "The excerpt describes an ongoing outbreak in Nampula and Cabo Delgado, weekly incidence during week 12 ending 25 March 2018, and places still reporting cases as of 25 March. This establishes March 2018 activity, not a new March onset.",
- limitation="Full PDF was not independently retrieved. Screenshot preserved at evidence_screenshots/mozambique_who_march2018_excerpt_author_20261018.png; document-level metadata follow the landing page, not the cropped image. The northern episode is not linked to the 2019 Idai request; the February-2018 end statement in S09 remains discrepant.", accessed_on="2026-10-18"),
+ "Full author-supplied 19-page PDF read on 22 October 2026: PDF page 4 (printed page 03), Mozambique Event description; event-summary row on PDF page 13",
+ "The full bulletin describes an ongoing outbreak in Nampula and Cabo Delgado and places reporting cases as of 25 March 2018. This establishes March 2018 activity, not a new March onset.",
+ limitation="Author-supplied bulletin.pdf SHA256 5fd96139c7f930b1eeea16d535afdfede390ac789f322ab38cac59d916da107e. Full PDF was read, not independently downloaded. The northern episode is not linked to the 2019 Idai request; the February-2018 end statement in S09 remains discrepant. The earlier screenshot is retained internally, not distributed in this package.", accessed_on="2026-10-22"),
  source("S11", "Cholera in Niger Republic: An Analysis of National Surveillance Data, 1991-2015", "Manzo et al., International Journal of Infection 4(3):e15591", "2017-07-24",
  "https://brieflands.com/journals/iji/articles/15591",
  "Results 4.1, paragraph beginning Between January and September, 2015",
@@ -122,17 +120,18 @@ SOURCES = [
  "Uses a non-comprehensive surveillance compilation, an operational incidence threshold, and uninterrupted-reporting eligibility for main-analysis outbreaks.",
  limitation="External reports do not prove an error in that extraction; differing definitions and coverage remain possible explanations."),
  source("S23", "Cholera Outbreaks in Central and West Africa: 2018 Regional Update - Week 40",
- "Regional Cholera Platform for Western and Central Africa / Ministries of Health", "2018, Week 40",
- "https://plateformecholera.info/sites/default/files/2022-11/WCA%20Cholera_Update_W40_2018.pdf",
+ "UNICEF / Regional Cholera Platform for Western and Central Africa", "2018-10-20 (ReliefWeb publication date; Week 40 reporting period)",
+ "https://reliefweb.int/report/democratic-republic-congo/cholera-outbreaks-central-and-west-africa-2018-regional-update-15",
  "Page 1: Sierra Leone row, weekly column headers and suspected-case footnote",
  "Lists 37 suspected cases in W1-30 and zero in W31-38; W39-40 are NA. Does not establish a positive count in August 2018-July 2019.",
- limitation="No request linkage. Cumulative annual totals are not dated evidence inside the prior window; NA is not zero. The printed publication-date footer is inconsistent with the week number and is not used for event dating.", accessed_on="2026-10-18"),
+ limitation="Verified ReliefWeb replacement for the obsolete platform link; author-supplied ReliefWeb PDF checked on 24 October 2026. No request linkage. Cumulative annual totals are not dated evidence inside the prior window; NA is not zero. The printed publication-date footer is inconsistent with the week number and is not used for event dating.", accessed_on="2026-10-24"),
  source("S24", "Cholera Outbreaks in Central and West Africa: 2018 Regional Update - Week 50",
  "Regional Cholera Platform for Western and Central Africa / Ministries of Health", "2018, Week 50",
- "https://plateformecholera.info/sites/default/files/2022-10/WCA%20Cholera_Update_W50_2018.pdf",
+ "",
  "Page 1: Sierra Leone row, weekly column headers and case-classification fields",
  "Lists 37 cumulative suspected cases, zero at W41 and NA at W42-50; the confirmation field reports 0 confirmed.",
- limitation="Cannot assign cumulative cases to the audit window or infer absence from missing reports. Inconsistent printed publication-date footer retained as a source limitation.", accessed_on="2026-10-18"),
+ access="historical_unavailable",
+ limitation="Historical source, not used in the current manuscript table. Original platform URL has been withdrawn from active use following the unsafe redirect of that domain. No replacement link is asserted. Cannot assign cumulative cases to the audit window or infer absence from missing reports.", accessed_on="2026-10-18"),
  source("S25", "Observation Collection 21445: Sierra Leone, UNICEF WCAR Weekly Cholera Reports",
  "CholeraTaxonomy public data catalogue", "undated catalogue (historical documents 2018-2019)",
  "https://cholera-taxonomy.middle-distance.com/observation_collections/21445?page=4",
@@ -149,10 +148,12 @@ SOURCES = [
 ]
 
 def event(source_id, country, start, end, precision, description):
+    """Store dated evidence bounds without assuming an exact onset date."""
     return dict(source_id=source_id, country=country, date_lower=start, date_upper=end,
                 precision=precision, description=description)
 
 def assessment(aid, status, grade, sources, anchors, finding, linkage, hypothesis, limitation):
+    """Store one human-reviewed case and its unresolved linkage questions."""
     return dict(audit_id=aid, prior_activity_status=status, evidence_grade=grade,
                 source_ids=sources, prior_event_anchors=anchors, external_finding=finding,
                 request_linkage=linkage, explanation_hypothesis=hypothesis, remaining_uncertainty=limitation)
@@ -196,11 +197,11 @@ ASSESSMENTS = [
  "Country/window only; no direct request match.", "External-record discordance at country/window level.",
  "Publication is later than submission; it does not establish what officials knew on 4 April."),
  assessment("Z08", "documented", "A", ["S07","S08","S09","S10"],
- [event("S10","Mozambique","2018-03-01","2018-03-31","month","Ongoing northern outbreak and reported weekly incidence in March 2018, confirmed by the author-supplied bulletin excerpt")],
- "WHO dates a flood-risk request to 21 March 2019, before the 27 March formal declaration. A read WHO bulletin excerpt documents northern activity in March 2018, inside the preceding March 2018-February 2019 window.",
+ [event("S10","Mozambique","2018-03-01","2018-03-31","month","Ongoing northern outbreak and reported weekly incidence in March 2018, confirmed in the full author-supplied bulletin")],
+ "WHO dates a flood-risk request to 21 March 2019, before the 27 March formal declaration. The full WHO bulletin documents northern activity in March 2018, inside the preceding March 2018-February 2019 window.",
  "Strong request-date match; two source IDs share the date. Author-supplied dashboard screenshots show deliveries on 2 April (D01) and 7 July (D02), not proof of duplicate or independent submissions. Shipment 884,953 differs from each record's 884,975 requested doses.",
  "External-record discordance at country/window level; the request separately has documented flood-risk context.",
- "Declaration is not onset. March 2018 activity does not identify the outbreak or area behind the March 2019 request. The February-2018 end statement in S09 and ongoing March activity in S10 remain discrepant; full PDF not independently retrieved."),
+ "Declaration is not onset. March 2018 activity does not identify the outbreak or area behind the March 2019 request. The February-2018 end statement in S09 and ongoing March activity in S10 remain discrepant. Full author-supplied bulletin read on 22 October 2026; not independently downloaded."),
  assessment("Z09", "documented", "B", ["S08"],
  [event("S08","Mozambique","2019-03-27","2019-03-27","day","Formal declaration of Idai-associated outbreak")],
  "An outbreak was declared in Mozambique in March 2019, within the April request's prior window.",
@@ -212,11 +213,11 @@ ASSESSMENTS = [
  "Surveillance analysis documents cases in January 2015, within the January 2016 request's prior window.",
  "Country/window only; exact request target unknown.", "External-record discordance at country/window level.",
  "Cases include some imports; outbreak eligibility under Zheng's definition is not established."),
- assessment("Z11", "not-established", "C", ["S12","S23","S24","S25"], [],
- "Oxfam supplies flood context only. Read 2018 WCAR bulletins document suspected cases but do not establish positive activity during August 2018-July 2019; the underlying weekly catalogue downloads remain unread.",
+ assessment("Z11", "not-established", "C", ["S23"], [],
+ "The read Week 40 regional bulletin lists cumulative suspected cases but does not establish positive activity during August 2018-July 2019. Annual totals cannot be assigned to this window.",
  "Author screenshot confirms request 22 August 2019 (2019-I11-D01), with no decision or delivery displayed; this is not proof of no response. No outbreak/request linkage established. The 2017 campaign is outside the window.",
  "Flood-related risk is context only; record-specific explanation unresolved.",
- "No inference of no cholera, date error, or campaign-label error is warranted. The author's candidate ReliefWeb report of 18 cases could not be read directly; its reporting period and within-window timing remain unverified. Missing weekly reports are not zeros."),
+ "No inference of no cholera, date error, or campaign-label error is warranted. Week 40 is now traceable through the verified ReliefWeb page and supplied PDF. Cumulative counts do not establish within-window timing. Missing weekly reports are not zeros."),
  assessment("Z12", "not-established", "C", ["S13"], [],
  "WHO describes prevention of importation risk in Renk during November 2019.",
  "Not a demonstrated match: campaign starts 18 November, 280,033 doses, versus request 29 November, 508,784 doses.",

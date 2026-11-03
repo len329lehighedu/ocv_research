@@ -1,10 +1,7 @@
 #!/usr/bin/env python3
-"""Recalculate manuscript Section 3.1 source-data and timing summaries.
-
-Prints unrounded values so manuscript rounding and denominator choices remain
-auditable. The 2013-2019 outbreak-source summary and the country-month
-predictor both assign the separately coded Zanzibar record to Tanzania.
-"""
+"""Print unrounded outbreak, request and delivery summaries.
+Manuscript: Results 3.1; Tables S2-S4 and retained legacy dose comparison.
+Use recorded delivery intervals; do not infer missing dates."""
 
 from __future__ import annotations
 
@@ -15,6 +12,7 @@ import pandas as pd
 
 
 def summarize(outbreaks: pd.DataFrame, requests: pd.DataFrame, deliveries: pd.DataFrame) -> None:
+    """Print source totals, available-value means and recorded delivery intervals."""
     starts = pd.to_datetime(outbreaks.start_date, errors="raise")
     source = outbreaks.loc[starts.dt.year.between(2013, 2019)].copy()
     country_codes = source.country.replace({"TZA_zanzibar": "TZA"})
@@ -75,6 +73,7 @@ def summarize(outbreaks: pd.DataFrame, requests: pd.DataFrame, deliveries: pd.Da
 
 
 def main() -> None:
+    """Read inputs, run this script and save its outputs."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--outbreaks", type=Path, required=True)
     parser.add_argument("--requests", type=Path, required=True)

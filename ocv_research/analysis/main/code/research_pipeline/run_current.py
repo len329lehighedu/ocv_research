@@ -1,12 +1,6 @@
 #!/usr/bin/env python3
-"""Rebuild the data and figures used by the current outbreak-activity manuscript.
-
-Run from ``analysis/main/code`` with
-``python3 -B -m research_pipeline.run_current``. Outputs default to the
-sibling ``outputs/`` directory; use ``--output-root`` for a
-disposable check.
-This frozen release maps the source's TZA_zanzibar record to Tanzania.
-"""
+"""Build the main panel, fit models and draw Figures 1 and 2.
+Manuscript: Methods 2.1-2.3 and 2.5; Results 3.1-3.3; Tables S2-S6, S8-S9."""
 
 from __future__ import annotations
 
@@ -22,6 +16,7 @@ SOURCES = PACKAGE.parents[1] / "data/source"
 
 
 def invoke(module: str, *args: object, capture: Path | None = None) -> None:
+    """Run a Python workflow step and stop if it fails."""
     command = [sys.executable, "-B", "-m", module, *(str(arg) for arg in args)]
     result = subprocess.run(command, cwd=ROOT, check=True, text=True, capture_output=True)
     if capture is not None:
@@ -33,6 +28,7 @@ def invoke(module: str, *args: object, capture: Path | None = None) -> None:
 
 
 def main() -> None:
+    """Read inputs, run this script and save its outputs."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output-root", type=Path, default=PACKAGE / "outputs")
     parser.add_argument("--reps", type=int, default=99999)

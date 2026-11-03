@@ -14,7 +14,7 @@
 | Reactive requests | 70 | 66 |
 | Preventive requests | 17 | 19 |
 | Unclassified requests | 1 | 0 |
-| Mean request-to-decision days | 17.77 | 10.4 |
+| Mean request-to-decision days | 17.75 | 10.4 |
 | Mean decision-to-delivery days, all rounds | 142.4 | 83.3 |
 
 The count ratio uses 100 delivery rounds and 61 dashboard requests with a positive numeric approval. These are different count universes, not a mean of rounds per approved request.
